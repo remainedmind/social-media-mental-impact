@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
-
-export interface QuizResult {
-  score: number;
-  profileId: 'anchor' | 'spectator' | 'connected' | 'fatigue';
-  title: string;
-  description: string;
-  philosophicalConcept: string;
-  insight: string;
-}
+import { getResultFromScore } from '../utils/quizUtils';
+import type { QuizResult } from '../utils/quizUtils';
 
 interface ReflectiveQuizProps {
   onComplete: (result: QuizResult) => void;
@@ -27,95 +20,55 @@ interface Question {
 const QUESTIONS: Question[] = [
   {
     id: 1,
-    text: "When you open a social media app, what is your primary immediate sensation?",
+    text: "When you open a social media app, what's usually the trigger?",
     options: [
-      { text: "Purposeful intent to message a specific person or check a particular update.", score: 1 },
-      { text: "Curiosity or seeking a quick burst of connection.", score: 2 },
-      { text: "Habitual impulse—my fingers open it without thinking.", score: 3 },
-      { text: "Anxious expectation or scanning for validation.", score: 4 }
+      { text: "I have a specific reason—like messaging a friend or looking up a particular page.", score: 1 },
+      { text: "Just curiosity. I want to see if anything interesting has popped up.", score: 2 },
+      { text: "Pure muscle memory. My fingers just tap the icon without me even thinking.", score: 3 },
+      { text: "Nervous habit. I feel anxious or bored and look for a quick distraction.", score: 4 }
     ]
   },
   {
     id: 2,
-    text: "How do you feel after spending more than 30 minutes scrolling through your feed?",
+    text: "How do you feel after scrolling through your feed for more than 30 minutes?",
     options: [
-      { text: "Calm and satisfied with the information or connections gathered.", score: 1 },
-      { text: "Slightly fatigued, but ready to shut the screen and move on.", score: 2 },
-      { text: "Stimulated but anxious, wanting to see even more.", score: 3 },
-      { text: "Drained, empty, or vaguely disconnected from my physical space.", score: 4 }
+      { text: "Good. I caught up with friends or read something interesting and feel satisfied.", score: 1 },
+      { text: "A little tired, but it's easy for me to close the app and move on.", score: 2 },
+      { text: "Hyped up but anxious. I feel like I need to keep scrolling to find more.", score: 3 },
+      { text: "Drained and empty. I feel strangely disconnected from the actual room I'm sitting in.", score: 4 }
     ]
   },
   {
     id: 3,
-    text: "How does the 'online persona' you project compare to your internal lived experience?",
+    text: "How does the 'you' on screen compare to how you actually feel inside?",
     options: [
-      { text: "They are mostly aligned; I write/share rarely, and only with authenticity.", score: 1 },
-      { text: "I don't project any persona; I am purely a silent observer.", score: 2 },
-      { text: "I try to keep it honest, but it still feels like an curated performance.", score: 3 },
-      { text: "It represents a carefully optimized version that hides my struggles.", score: 4 }
+      { text: "They're the same. I rarely post, and when I do, I'm just being myself.", score: 1 },
+      { text: "I don't post anything at all. I'm just here to watch.", score: 2 },
+      { text: "I try to keep it real, but it still feels like a polished performance.", score: 3 },
+      { text: "My profile is a highly optimized version of my life. I hide all my real struggles.", score: 4 }
     ]
   },
   {
     id: 4,
-    text: "When trying to focus on a book, film, or quiet thought, how often do you feel the pull of notifications?",
+    text: "When you try to read a book, watch a movie, or just sit quietly, does your phone pull you back?",
     options: [
-      { text: "Rarely—I can immerse myself easily in slow, analog activities.", score: 1 },
-      { text: "Occasionally, but I can easily resist the urge to check.", score: 2 },
-      { text: "Often, but it's only to verify urgent updates, not casual feeds.", score: 3 },
-      { text: "Frequently; I struggle to read a single page or sit in silence without looking.", score: 4 }
+      { text: "Rarely. I can easily lose myself in offline, quiet activities.", score: 1 },
+      { text: "Sometimes, but I can easily ignore the notifications and keep focusing.", score: 2 },
+      { text: "Often. I feel this constant itch to check for updates, even if they aren't urgent.", score: 3 },
+      { text: "Constantly. I struggle to read a single page or sit in silence without looking at the screen.", score: 4 }
     ]
   },
   {
     id: 5,
-    text: "What is your primary relationship with the digital 'Others' (influencers, friends, peers) on screen?",
+    text: "How do you feel when looking at posts from friends or influencers?",
     options: [
-      { text: "Active engagement—I genuinely converse and build real-world connections.", score: 1 },
-      { text: "Distracted entertainment—I watch their lives as a form of harmless noise.", score: 2 },
-      { text: "Cynical critique—I watch but feel detached or frustrated by the performative nature.", score: 3 },
-      { text: "Passive comparison—I feel inadequate seeing their achievements or aesthetics.", score: 4 }
+      { text: "Happy or neutral. I chat with them and feel genuinely connected.", score: 1 },
+      { text: "Amused. I just watch their lives as a form of harmless entertainment.", score: 2 },
+      { text: "A bit annoyed or cynical about how performative everyone's posts are.", score: 3 },
+      { text: "Insecure. Seeing their highlight reels makes me feel like I'm falling behind.", score: 4 }
     ]
   }
 ];
-
-export const getResultFromScore = (score: number): QuizResult => {
-  if (score <= 8) {
-    return {
-      score,
-      profileId: 'anchor',
-      title: "The Anchor (Digital Harmony)",
-      description: "You maintain an intentional and grounded relationship with the digital sphere. Social media is a tool, not a mirror or a prison. You remain connected to your immediate physical reality.",
-      philosophicalConcept: "Stoic Dichotomy of Control",
-      insight: "You exercise choice in what you pay attention to. Keep protecting your silence, as it allows your inner self to remain coherent rather than scattered."
-    };
-  } else if (score <= 12) {
-    return {
-      score,
-      profileId: 'spectator',
-      title: "The Spectator (Detached Noise)",
-      description: "You use screens mostly for passive entertainment. While you don't feel acute despair, you risk using digital noise to fill quiet spaces, slowly eroding your capacity for deep reflection.",
-      philosophicalConcept: "Pascalian Diversion (Divertissement)",
-      insight: "Blaise Pascal argued we seek distraction to avoid sitting in a quiet room with ourselves. Try choosing complete silence over passive scroll time once a day."
-    };
-  } else if (score <= 16) {
-    return {
-      score,
-      profileId: 'connected',
-      title: "The Hyper-Connected (The Curation Loop)",
-      description: "You are deeply caught in the performative loops of the network. You feel a constant pull to check notification dynamics, leading to imposter anxiety, comparison fatigue, and a fractured attention span.",
-      philosophicalConcept: "Baudrillard's Simulacra",
-      insight: "You are editing a copy of yourself for others to view, which can create a gap between your online avatar and your lived experience. Focus on experiences you do not capture on camera."
-    };
-  } else {
-    return {
-      score,
-      profileId: 'fatigue',
-      title: "The Fatigue-Bound (Sisyphus of the Scroll)",
-      description: "You are experiencing acute digital burnout and existential alienation. The screen has become an involuntary habit that separates you from your immediate reality, leaving you feeling empty, fatigued, or anxious.",
-      philosophicalConcept: "Byung-Chul Han's Fatigue Society",
-      insight: "You are self-exploiting in pursuit of connection and optimization. The cure is not more productivity, but the 'peaceful tiredness' that comes from real, physical pauses and doing nothing."
-    };
-  }
-};
 
 export const ReflectiveQuiz: React.FC<ReflectiveQuizProps> = ({ onComplete, onReset, savedResult }) => {
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -160,24 +113,40 @@ export const ReflectiveQuiz: React.FC<ReflectiveQuizProps> = ({ onComplete, onRe
           textAlign: 'left'
         }}>
           <h4 style={{ fontFamily: 'var(--font-serif)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>
-            Philosophical Concept: {savedResult.philosophicalConcept}
+            Philosophical Idea: {savedResult.philosophicalConcept}
           </h4>
           <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-primary)' }}>
             {savedResult.insight}
           </p>
         </div>
 
-        <button 
-          className="btn-primary"
-          onClick={() => {
-            setCurrentIdx(0);
-            setSelectedScore(null);
-            setTotalScore(0);
-            onReset();
-          }}
-        >
-          Reflect Again
-        </button>
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <button 
+            className="btn-secondary"
+            onClick={() => {
+              setCurrentIdx(0);
+              setSelectedScore(null);
+              setTotalScore(0);
+              onReset();
+            }}
+            style={{ marginTop: 0 }}
+          >
+            Reflect Again
+          </button>
+          <a 
+            href="#help" 
+            className="btn-primary" 
+            style={{ 
+              textDecoration: 'none', 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              fontWeight: 500
+            }}
+          >
+            Get Help & Support
+          </a>
+        </div>
       </div>
     );
   }

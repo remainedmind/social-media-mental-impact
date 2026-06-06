@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import type { QuizResult } from './ReflectiveQuiz';
+import React, { useState } from 'react';
+import type { QuizResult } from '../utils/quizUtils';
 
 interface Node {
   id: string;
@@ -20,73 +20,73 @@ const NODES: Node[] = [
     id: "notifications",
     x: 100,
     y: 80,
-    label: "Digital Pings",
-    description: "Constant auditory and visual alerts fragmenting continuous consciousness.",
-    quote: "Every notification is a demand on your presence from someone who isn't there."
+    label: "Constant Pings",
+    description: "Every ding, buzz, and red dot that pulls your focus away from the real world.",
+    quote: "Every notification is a reminder of a virtual world demanding your attention."
   },
   {
     id: "infinite_scroll",
     x: 100,
     y: 200,
-    label: "Infinite Scroll",
-    description: "The Sisyphus-like behavior of descending feeds without endpoints.",
-    quote: "We roll the screen up only for it to reset, a digital task devoid of completion."
+    label: "The Endless Scroll",
+    description: "Scrolling down forever with no natural stopping point. You roll the screen up only for it to reset.",
+    quote: "A digital task that never ends, designed to keep you scrolling forever."
   },
   {
     id: "validation_seeking",
     x: 100,
     y: 320,
-    label: "Social Feedback",
-    description: "Seeking external value validation through likes, notifications, and shares.",
-    quote: "Seeking approval online turns your lived reality into a commodity for others' validation."
+    label: "Looking for Likes",
+    description: "Checking your phone to see who liked your post or commented, tying your self-worth to numbers.",
+    quote: "We start translating our real moments into posts, hoping someone else approves."
   },
   {
     id: "dopamine_loop",
     x: 350,
     y: 80,
-    label: "Dopamine Exhaustion",
-    description: "The depletion of brain reward chemistry through unpredictable micro-stimuli.",
-    quote: "When rewards are constant and random, the value of satisfaction drops to zero."
+    label: "Dopamine Fatigue",
+    description: "When your brain gets tired from a constant drip-feed of unpredictable notifications.",
+    quote: "When feedback is random and constant, it stops feeling rewarding and starts feeling exhausting."
   },
   {
     id: "comparison_trap",
     x: 350,
     y: 200,
-    label: "Imposter Comparison",
-    description: "Measuring your complex internal reality against others' curated showcases.",
-    quote: "We compare our behind-the-scenes footage with everyone else's highlight reels."
+    label: "The Comparison Trap",
+    description: "Comparing your messy everyday life with everyone else's highlight reels.",
+    quote: "You see their best days on screen and wonder why your ordinary days feel so dull."
   },
   {
     id: "curation_burden",
     x: 350,
     y: 320,
-    label: "Curated Avatar",
-    description: "The continuous burden of maintaining an optimized online replica of yourself.",
-    quote: "The avatar demands maintenance. We work for the profile, rather than living for ourselves."
+    label: "The Online Avatar",
+    description: "The constant job of maintaining a polished online version of yourself.",
+    quote: "The profile needs updates. We begin working for our avatar instead of just living."
   },
   {
     id: "burnout",
     x: 600,
     y: 80,
-    label: "Self-Exploitation",
-    description: "Byung-Chul Han describes burnout as the voluntary overwork under the guise of freedom.",
-    quote: "The burnout subject is fighting against themselves, unable to distinguish freedom from constraint."
+    label: "Digital Burnout",
+    description: "Exhaustion that comes from voluntarily overworking your brain to stay connected.",
+    quote: "We think we are free to scroll, but we find ourselves unable to stop."
   },
   {
     id: "alienation",
     x: 600,
     y: 200,
-    label: "Existential Isolation",
-    description: "Feeling lonely in a crowd of contacts; losing connection to immediate physical reality.",
-    quote: "We are connected, yet completely untouched. Social networks replace closeness with proximity."
+    label: "Loneliness in a Crowd",
+    description: "Feeling isolated despite having hundreds of online contacts. You're connected, but untouched.",
+    quote: "Social media gives us virtual proximity, but takes away real, physical presence."
   },
   {
     id: "inauthenticity",
     x: 600,
     y: 320,
-    label: "The Simulacrum Self",
-    description: "Baudrillard's concept of the sign replacing reality. The online profile becomes the real self.",
-    quote: "The representation has swallowed the original. We exist to feed the image."
+    label: "Living in the Screen",
+    description: "When the online image of your life starts feeling more important than your actual life.",
+    quote: "The image of our life replaces the reality. We exist to feed the profile."
   }
 ];
 
@@ -109,24 +109,16 @@ interface ConceptMapProps {
 
 export const ConceptMap: React.FC<ConceptMapProps> = ({ activeResult }) => {
   const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
-  const [highlightedNodes, setHighlightedNodes] = useState<string[]>([]);
-  const [highlightedLinks, setHighlightedLinks] = useState<string[]>([]);
 
-  // Update highlighted nodes/links based on quiz results
-  useEffect(() => {
-    if (!activeResult) {
-      setHighlightedNodes([]);
-      setHighlightedLinks([]);
-      return;
-    }
+  // Derived state: calculate active highlights directly from activeResult during render
+  let highlightedNodes: string[] = [];
+  let highlightedLinks: string[] = [];
 
+  if (activeResult) {
     const { profileId } = activeResult;
-    let activeNodes: string[] = [];
-    let activeLinks: string[] = [];
-
     if (profileId === 'fatigue') {
-      activeNodes = ["notifications", "infinite_scroll", "dopamine_loop", "comparison_trap", "burnout", "alienation"];
-      activeLinks = [
+      highlightedNodes = ["notifications", "infinite_scroll", "dopamine_loop", "comparison_trap", "burnout", "alienation"];
+      highlightedLinks = [
         "notifications-dopamine_loop",
         "infinite_scroll-dopamine_loop",
         "infinite_scroll-comparison_trap",
@@ -135,8 +127,8 @@ export const ConceptMap: React.FC<ConceptMapProps> = ({ activeResult }) => {
         "dopamine_loop-alienation"
       ];
     } else if (profileId === 'connected') {
-      activeNodes = ["validation_seeking", "curation_burden", "comparison_trap", "inauthenticity", "alienation"];
-      activeLinks = [
+      highlightedNodes = ["validation_seeking", "curation_burden", "comparison_trap", "inauthenticity", "alienation"];
+      highlightedLinks = [
         "validation_seeking-curation_burden",
         "validation_seeking-comparison_trap",
         "curation_burden-inauthenticity",
@@ -144,20 +136,13 @@ export const ConceptMap: React.FC<ConceptMapProps> = ({ activeResult }) => {
         "comparison_trap-alienation"
       ];
     } else if (profileId === 'spectator') {
-      activeNodes = ["infinite_scroll", "dopamine_loop", "burnout"];
-      activeLinks = [
+      highlightedNodes = ["infinite_scroll", "dopamine_loop", "burnout"];
+      highlightedLinks = [
         "infinite_scroll-dopamine_loop",
         "dopamine_loop-burnout"
       ];
-    } else if (profileId === 'anchor') {
-      // Anchors don't trigger passive fatigue paths
-      activeNodes = [];
-      activeLinks = [];
     }
-
-    setHighlightedNodes(activeNodes);
-    setHighlightedLinks(activeLinks);
-  }, [activeResult]);
+  }
 
   const handleNodeMouseEnter = (node: Node) => {
     setHoveredNode(node);
@@ -266,15 +251,15 @@ export const ConceptMap: React.FC<ConceptMapProps> = ({ activeResult }) => {
             </h4>
             <p style={{ fontSize: '0.95rem', margin: 0, color: 'var(--text-secondary)' }}>
               {activeResult.profileId === 'anchor' 
-                ? "You have managed to stay grounded! No critical toxic dependencies or fatigue loops are highlighted. Feel free to hover over individual nodes to inspect potential digital pitfalls."
-                : `Your questionnaire score has illuminated the pathway of nodes above. Hover over the highlighted nodes (or any others) to understand the cognitive progression of your digital experience.`
+                ? "You have managed to stay grounded! No toxic dependencies or fatigue loops are highlighted. Feel free to hover over individual nodes to inspect potential digital pitfalls."
+                : `Your quiz results have highlighted the loop above. Hover over the active nodes to understand the cognitive progression of your digital experience.`
               }
             </p>
           </div>
         ) : (
           <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }} className="fade-in">
             <p style={{ fontStyle: 'italic', fontSize: '0.95rem', margin: 0 }}>
-              Hover over any node in the map above to explore the philosophical connections of digital fatigue, or complete the Reflection Quiz to highlight your pathway.
+              Hover over any node in the map above to explore the connections of digital fatigue, or complete the Quiz above to highlight your specific pathway.
             </p>
           </div>
         )}

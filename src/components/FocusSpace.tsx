@@ -12,24 +12,24 @@ interface PodcastTrack {
 const TRACKS: PodcastTrack[] = [
   {
     id: 1,
-    title: "The Self in the Algorithmic Mirror",
-    author: "Echoes of the Screen",
+    title: "1. The Online Version of You",
+    author: "Student Term Project",
     duration: 342,
-    description: "An essay exploring Baudrillard's hyperreality and how our online profiles replace our real physical lives."
+    description: "A short talk on why we spend so much energy polishing our profiles, and how our online avatar can start feeling more real than our day-to-day life."
   },
   {
     id: 2,
-    title: "Burnout and the Fatigue Society",
-    author: "Echoes of the Screen",
+    title: "2. The Burnout Cycle",
+    author: "Student Term Project",
     duration: 435,
-    description: "Analyzing Byung-Chul Han's thesis: how we voluntarily self-exploit in the name of productivity and likes."
+    description: "Explaining Byung-Chul Han's idea of the 'Fatigue Society': how we willingly exhaust ourselves for productivity and likes, thinking we are free."
   },
   {
     id: 3,
-    title: "The Scroll of Sisyphus",
-    author: "Echoes of the Screen",
+    title: "3. Sisyphus & The Endless Scroll",
+    author: "Student Term Project",
     duration: 270,
-    description: "A philosophical take on the loop of endless feeds and the search for authentic meaning."
+    description: "Comparing the ancient myth of Sisyphus rolling a boulder up a hill to our daily habit of scrolling through feeds that never end."
   }
 ];
 
@@ -74,7 +74,7 @@ export const FocusSpace: React.FC = () => {
 
   const initAudioContext = () => {
     if (!audioCtxRef.current) {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioContextClass = window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       audioCtxRef.current = new AudioContextClass();
     }
     if (audioCtxRef.current.state === 'suspended') {
@@ -84,13 +84,43 @@ export const FocusSpace: React.FC = () => {
 
   const stopAllSynths = () => {
     // Stop drone
-    if (droneOsc1Ref.current) { try { droneOsc1Ref.current.stop(); } catch(e){} }
-    if (droneOsc2Ref.current) { try { droneOsc2Ref.current.stop(); } catch(e){} }
-    if (droneModRef.current) { try { droneModRef.current.stop(); } catch(e){} }
+    if (droneOsc1Ref.current) {
+      try {
+        droneOsc1Ref.current.stop();
+      } catch {
+        // Ignored: oscillator not started or stopped already
+      }
+    }
+    if (droneOsc2Ref.current) {
+      try {
+        droneOsc2Ref.current.stop();
+      } catch {
+        // Ignored
+      }
+    }
+    if (droneModRef.current) {
+      try {
+        droneModRef.current.stop();
+      } catch {
+        // Ignored
+      }
+    }
     
     // Stop wind
-    if (windSourceRef.current) { try { windSourceRef.current.stop(); } catch(e){} }
-    if (windModRef.current) { try { windModRef.current.stop(); } catch(e){} }
+    if (windSourceRef.current) {
+      try {
+        windSourceRef.current.stop();
+      } catch {
+        // Ignored
+      }
+    }
+    if (windModRef.current) {
+      try {
+        windModRef.current.stop();
+      } catch {
+        // Ignored
+      }
+    }
 
     droneOsc1Ref.current = null;
     droneOsc2Ref.current = null;
@@ -210,13 +240,13 @@ export const FocusSpace: React.FC = () => {
   const [podcastElapsed, setPodcastElapsed] = useState(0);
   
   // Melody oscillator when playing podcast (for sound feedback)
-  const podcastMelodyIntervalRef = useRef<any>(null);
+  const podcastMelodyIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const currentTrack = TRACKS[selectedTrackIdx];
 
   // Tick elapsed time when playing podcast
   useEffect(() => {
-    let timer: any;
+    let timer: ReturnType<typeof setInterval>;
     if (isPlayingPodcast) {
       timer = setInterval(() => {
         setPodcastElapsed((prev) => {
@@ -228,7 +258,9 @@ export const FocusSpace: React.FC = () => {
         });
       }, 1000);
     }
-    return () => clearInterval(timer);
+    return () => {
+      if (timer) clearInterval(timer);
+    };
   }, [isPlayingPodcast, currentTrack]);
 
   // Handle ambient synth music when playing podcast (Brian Eno style micro-chords)
@@ -308,9 +340,9 @@ export const FocusSpace: React.FC = () => {
       {/* Box 1: Breathing Guide */}
       <div className="card focus-tool-card" style={{ flex: 1.2 }}>
         <span className="lib-concept">Mindfulness Space</span>
-        <h3 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>Soma: Grounding Breath</h3>
+        <h3 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>Grounding Breath</h3>
         <p style={{ fontSize: '0.95rem', marginBottom: '2rem' }}>
-          Rest your eyes and breathe with the expanding ring. This activates the parasympathetic nervous system, slowing down the fight-or-flight scrolling response.
+          Give your eyes a break. Breathe in and out with the expanding ring to help slow down your racing thoughts.
         </p>
 
         <div className="breathing-box">
@@ -344,7 +376,7 @@ export const FocusSpace: React.FC = () => {
               <Volume2 size={18} style={{ color: 'var(--accent-sage)' }} />
               <div>
                 <div style={{ fontSize: '0.95rem', fontWeight: 500 }}>Earthy Resonance</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Low-frequency grounding drone</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>A deep, steady hum to help you feel grounded</div>
               </div>
             </div>
             <button 
@@ -359,8 +391,8 @@ export const FocusSpace: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <Wind size={18} style={{ color: 'var(--accent-sage)' }} />
               <div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 500 }}>Breeze & Waves</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Programmatic sea wind murmur</div>
+                <div style={{ fontSize: '0.95rem', fontWeight: 500 }}>Sea Breeze & Waves</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>A soft, generated sound of wind and waves</div>
               </div>
             </div>
             <button 
@@ -374,7 +406,7 @@ export const FocusSpace: React.FC = () => {
 
         {/* Podcast Player */}
         <div className="podcast-player">
-          <span className="lib-concept" style={{ fontSize: '0.7rem' }}>Curated Podcasts & Essays</span>
+          <span className="lib-concept" style={{ fontSize: '0.7rem' }}>Reflective Audio Talks</span>
           
           <div style={{ marginTop: '0.75rem', marginBottom: '1rem' }}>
             <select 
@@ -417,7 +449,7 @@ export const FocusSpace: React.FC = () => {
           </div>
           {isPlayingPodcast && (
             <div style={{ fontSize: '0.75rem', color: 'var(--accent-clay)', fontStyle: 'italic', textAlign: 'center', marginTop: '0.5rem' }} className="fade-in">
-              🔊 Synthesizing live ambient melodies in the background...
+              🔊 Generating gentle, random melodies in the background...
             </div>
           )}
         </div>
