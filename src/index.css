@@ -789,3 +789,35 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Concept Map Responsive Adjustments */
+@media (max-width: 768px) {
+  .concept-map-container {
+    padding: 1rem 0.5rem;
+    border-radius: var(--radius-md);
+  }
+}
+
+/* Custom Scrollbar for Concept Map Container */
+.concept-map-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.concept-map-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.concept-map-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.concept-map-container::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+.concept-map-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+

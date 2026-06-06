@@ -8,6 +8,9 @@ interface Node {
   label: string;
   description: string;
   quote: string;
+  textAnchor: 'inherit' | 'end' | 'start' | 'middle';
+  dx: number;
+  dy: number;
 }
 
 interface Link {
@@ -18,27 +21,36 @@ interface Link {
 const NODES: Node[] = [
   {
     id: "notifications",
-    x: 100,
+    x: 150,
     y: 80,
     label: "Constant Pings",
     description: "Every ding, buzz, and red dot that pulls your focus away from the real world.",
-    quote: "Every notification is a reminder of a virtual world demanding your attention."
+    quote: "Every notification is a reminder of a virtual world demanding your attention.",
+    textAnchor: "end",
+    dx: -18,
+    dy: 4
   },
   {
     id: "infinite_scroll",
-    x: 100,
+    x: 150,
     y: 200,
     label: "The Endless Scroll",
     description: "Scrolling down forever with no natural stopping point. You roll the screen up only for it to reset.",
-    quote: "A digital task that never ends, designed to keep you scrolling forever."
+    quote: "A digital task that never ends, designed to keep you scrolling forever.",
+    textAnchor: "end",
+    dx: -18,
+    dy: 4
   },
   {
     id: "validation_seeking",
-    x: 100,
+    x: 150,
     y: 320,
     label: "Looking for Likes",
     description: "Checking your phone to see who liked your post or commented, tying your self-worth to numbers.",
-    quote: "We start translating our real moments into posts, hoping someone else approves."
+    quote: "We start translating our real moments into posts, hoping someone else approves.",
+    textAnchor: "end",
+    dx: -18,
+    dy: 4
   },
   {
     id: "dopamine_loop",
@@ -46,7 +58,10 @@ const NODES: Node[] = [
     y: 80,
     label: "Dopamine Fatigue",
     description: "When your brain gets tired from a constant drip-feed of unpredictable notifications.",
-    quote: "When feedback is random and constant, it stops feeling rewarding and starts feeling exhausting."
+    quote: "When feedback is random and constant, it stops feeling rewarding and starts feeling exhausting.",
+    textAnchor: "middle",
+    dx: 0,
+    dy: -20
   },
   {
     id: "comparison_trap",
@@ -54,7 +69,10 @@ const NODES: Node[] = [
     y: 200,
     label: "The Comparison Trap",
     description: "Comparing your messy everyday life with everyone else's highlight reels.",
-    quote: "You see their best days on screen and wonder why your ordinary days feel so dull."
+    quote: "You see their best days on screen and wonder why your ordinary days feel so dull.",
+    textAnchor: "middle",
+    dx: 0,
+    dy: -20
   },
   {
     id: "curation_burden",
@@ -62,31 +80,43 @@ const NODES: Node[] = [
     y: 320,
     label: "The Online Avatar",
     description: "The constant job of maintaining a polished online version of yourself.",
-    quote: "The profile needs updates. We begin working for our avatar instead of just living."
+    quote: "The profile needs updates. We begin working for our avatar instead of just living.",
+    textAnchor: "middle",
+    dx: 0,
+    dy: 26
   },
   {
     id: "burnout",
-    x: 600,
+    x: 550,
     y: 80,
     label: "Digital Burnout",
     description: "Exhaustion that comes from voluntarily overworking your brain to stay connected.",
-    quote: "We think we are free to scroll, but we find ourselves unable to stop."
+    quote: "We think we are free to scroll, but we find ourselves unable to stop.",
+    textAnchor: "start",
+    dx: 18,
+    dy: 4
   },
   {
     id: "alienation",
-    x: 600,
+    x: 550,
     y: 200,
     label: "Loneliness in a Crowd",
     description: "Feeling isolated despite having hundreds of online contacts. You're connected, but untouched.",
-    quote: "Social media gives us virtual proximity, but takes away real, physical presence."
+    quote: "Social media gives us virtual proximity, but takes away real, physical presence.",
+    textAnchor: "start",
+    dx: 18,
+    dy: 4
   },
   {
     id: "inauthenticity",
-    x: 600,
+    x: 550,
     y: 320,
     label: "Living in the Screen",
     description: "When the online image of your life starts feeling more important than your actual life.",
-    quote: "The image of our life replaces the reality. We exist to feed the profile."
+    quote: "The image of our life replaces the reality. We exist to feed the profile.",
+    textAnchor: "start",
+    dx: 18,
+    dy: 4
   }
 ];
 
@@ -211,7 +241,7 @@ export const ConceptMap: React.FC<ConceptMapProps> = ({ activeResult }) => {
                 onMouseLeave={handleNodeMouseLeave}
               >
                 <circle r="12" />
-                <text dx="18" dy="4">{node.label}</text>
+                <text dx={node.dx} dy={node.dy} textAnchor={node.textAnchor}>{node.label}</text>
               </g>
             );
           })}

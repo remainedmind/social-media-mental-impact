@@ -188,7 +188,7 @@ function App() {
             </p>
             <div className="video-container">
               <iframe 
-                src="https://www.youtube.com/embed/R4946321Q8E" 
+                src="https://www.youtube.com/embed/XlRlWuEyt8E" 
                 title="Why We're All Burning Out" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen
