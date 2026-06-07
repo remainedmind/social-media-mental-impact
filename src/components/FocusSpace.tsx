@@ -12,30 +12,30 @@ interface PodcastTrack {
 const TRACKS: PodcastTrack[] = [
   {
     id: 1,
-    title: "1. The Online Version of You",
-    author: "Student Term Project",
+    title: "1. Cyfrowy wizerunek i awatar",
+    author: "Projekt semestralny",
     duration: 342,
-    description: "A short talk on why we spend so much energy polishing our profiles, and how our online avatar can start feeling more real than our day-to-day life."
+    description: "Krótka refleksja o tym, dlaczego wkładamy tyle energii w kreowanie profili i jak nasz cyfrowy awatar staje się ważniejszy od codzienności."
   },
   {
     id: 2,
-    title: "2. The Burnout Cycle",
-    author: "Student Term Project",
+    title: "2. Pętla cyfrowego wypalenia",
+    author: "Projekt semestralny",
     duration: 435,
-    description: "Explaining Byung-Chul Han's idea of the 'Fatigue Society': how we willingly exhaust ourselves for productivity and likes, thinking we are free."
+    description: "Przyjrzenie się idei Byung-Chul Hana o społeczeństwie zmęczenia: jak sami siebie eksploatujemy, wierząc, że jesteśmy wolni."
   },
   {
     id: 3,
-    title: "3. Sisyphus & The Endless Scroll",
-    author: "Student Term Project",
+    title: "3. Syzyf i nieskończony scroll",
+    author: "Projekt semestralny",
     duration: 270,
-    description: "Comparing the ancient myth of Sisyphus rolling a boulder up a hill to our daily habit of scrolling through feeds that never end."
+    description: "Porównanie mitu o Syzyfie do naszego codziennego, bezwiednego przewijania tablicy społecznościowych, które nigdy się nie kończy."
   }
 ];
 
 export const FocusSpace: React.FC = () => {
   // --- Breathing States ---
-  const [breatheState, setBreatheState] = useState<'Inhale' | 'Hold' | 'Exhale'>('Inhale');
+  const [breatheState, setBreatheState] = useState<'Wdech' | 'Wstrzymaj' | 'Wydech'>('Wdech');
   const [breatheSeconds, setBreatheSeconds] = useState(4);
 
   useEffect(() => {
@@ -44,9 +44,9 @@ export const FocusSpace: React.FC = () => {
         if (prev <= 1) {
           // Change state
           setBreatheState((curr) => {
-            if (curr === 'Inhale') return 'Hold';
-            if (curr === 'Hold') return 'Exhale';
-            return 'Inhale';
+            if (curr === 'Wdech') return 'Wstrzymaj';
+            if (curr === 'Wstrzymaj') return 'Wydech';
+            return 'Wdech';
           });
           return 4; // Reset to 4 seconds
         }
@@ -315,9 +315,9 @@ export const FocusSpace: React.FC = () => {
     };
   }, [isPlayingPodcast]);
 
-  const handlePodcastPlayPause = () => {
-    initAudioContext();
-    setIsPlayingPodcast(!isPlayingPodcast);
+  // Map state to breathing text
+  const getBreatheStateText = (state: 'Wdech' | 'Wstrzymaj' | 'Wydech') => {
+    return state;
   };
 
   const handleTrackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -325,6 +325,11 @@ export const FocusSpace: React.FC = () => {
     setSelectedTrackIdx(idx);
     setPodcastElapsed(0);
     setIsPlayingPodcast(false);
+  };
+
+  const handlePodcastPlayPause = () => {
+    initAudioContext();
+    setIsPlayingPodcast(!isPlayingPodcast);
   };
 
   const formatTime = (secs: number) => {
@@ -339,17 +344,17 @@ export const FocusSpace: React.FC = () => {
     <div className="focus-space-container">
       {/* Box 1: Breathing Guide */}
       <div className="card focus-tool-card" style={{ flex: 1.2 }}>
-        <span className="lib-concept">Mindfulness Space</span>
-        <h3 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>Grounding Breath</h3>
+        <span className="lib-concept">Trening uważności</span>
+        <h3 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>Oddech uziemiający</h3>
         <p style={{ fontSize: '0.95rem', marginBottom: '2rem' }}>
-          Give your eyes a break. Breathe in and out with the expanding ring to help slow down your racing thoughts.
+          Pozwól odpocząć swoim oczom. Wdychaj i wydychaj powietrze w rytm rozszerzającego się okręgu, by wyciszyć gonitwę myśli.
         </p>
 
         <div className="breathing-box">
           <div className="breathing-ring-outer">
-            <div className={`breathing-ring-inner ${breatheState.toLowerCase()}`}>
+            <div className={`breathing-ring-inner ${breatheState === 'Wdech' ? 'inhale' : breatheState === 'Wstrzymaj' ? 'hold' : 'exhale'}`}>
               <div className="breathing-text">
-                {breatheState}
+                {getBreatheStateText(breatheState)}
                 <div style={{ fontSize: '0.85rem', fontWeight: 400, opacity: 0.8, marginTop: '2px' }}>
                   {breatheSeconds}s
                 </div>
@@ -357,17 +362,17 @@ export const FocusSpace: React.FC = () => {
             </div>
           </div>
           <p className="breathing-instruction">
-            {breatheState === 'Inhale' && "Expand your lungs slowly..."}
-            {breatheState === 'Hold' && "Observe the still space within..."}
-            {breatheState === 'Exhale' && "Let go of all comparison..."}
+            {breatheState === 'Wdech' && "Powoli napełniaj płuca powietrzem..."}
+            {breatheState === 'Wstrzymaj' && "Zaobserwuj przestrzeń ciszy i spokoju..."}
+            {breatheState === 'Wydech' && "Uwolnij się od wszelkich porównań..."}
           </p>
         </div>
       </div>
 
       {/* Box 2: Soundscapes & Podcasts */}
       <div className="card focus-tool-card audio-card">
-        <span className="lib-concept">Audio Sanctuary</span>
-        <h3 style={{ fontSize: '1.75rem', marginBottom: '1.5rem' }}>Soundscapes</h3>
+        <span className="lib-concept">Strefa dźwięku</span>
+        <h3 style={{ fontSize: '1.75rem', marginBottom: '1.5rem' }}>Pejzaże dźwiękowe</h3>
 
         {/* Ambient Synthesizers */}
         <div className="ambient-toggles">
@@ -375,15 +380,15 @@ export const FocusSpace: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <Volume2 size={18} style={{ color: 'var(--accent-sage)' }} />
               <div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 500 }}>Earthy Resonance</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>A deep, steady hum to help you feel grounded</div>
+                <div style={{ fontSize: '0.95rem', fontWeight: 500 }}>Ziemski rezonans</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Głęboki, jednostajny szum ułatwiający uziemienie</div>
               </div>
             </div>
             <button 
               className={activeSynth === 'drone' ? 'playing' : ''}
               onClick={activeSynth === 'drone' ? stopAllSynths : startDrone}
             >
-              {activeSynth === 'drone' ? 'Playing' : 'Listen'}
+              {activeSynth === 'drone' ? 'Odtwarzane' : 'Słuchaj'}
             </button>
           </div>
 
@@ -391,22 +396,22 @@ export const FocusSpace: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <Wind size={18} style={{ color: 'var(--accent-sage)' }} />
               <div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 500 }}>Sea Breeze & Waves</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>A soft, generated sound of wind and waves</div>
+                <div style={{ fontSize: '0.95rem', fontWeight: 500 }}>Szum wiatru i fal</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Łagodny, automatycznie generowany dźwięk wiatru i fal</div>
               </div>
             </div>
             <button 
               className={activeSynth === 'wind' ? 'playing' : ''}
               onClick={activeSynth === 'wind' ? stopAllSynths : startWind}
             >
-              {activeSynth === 'wind' ? 'Playing' : 'Listen'}
+              {activeSynth === 'wind' ? 'Odtwarzane' : 'Słuchaj'}
             </button>
           </div>
         </div>
 
         {/* Podcast Player */}
         <div className="podcast-player">
-          <span className="lib-concept" style={{ fontSize: '0.7rem' }}>Reflective Audio Talks</span>
+          <span className="lib-concept" style={{ fontSize: '0.7rem' }}>Rozmowy o cyfrowej refleksji</span>
           
           <div style={{ marginTop: '0.75rem', marginBottom: '1rem' }}>
             <select 
@@ -449,7 +454,7 @@ export const FocusSpace: React.FC = () => {
           </div>
           {isPlayingPodcast && (
             <div style={{ fontSize: '0.75rem', color: 'var(--accent-clay)', fontStyle: 'italic', textAlign: 'center', marginTop: '0.5rem' }} className="fade-in">
-              🔊 Generating gentle, random melodies in the background...
+              🔊 Generowanie łagodnych, losowych melodii w tle...
             </div>
           )}
         </div>

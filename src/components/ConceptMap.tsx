@@ -23,9 +23,9 @@ const NODES: Node[] = [
     id: "notifications",
     x: 150,
     y: 80,
-    label: "Constant Pings",
-    description: "Every ding, buzz, and red dot that pulls your focus away from the real world.",
-    quote: "Every notification is a reminder of a virtual world demanding your attention.",
+    label: "Ciągłe powiadomienia",
+    description: "Każdy dźwięk, wibracja i czerwona kropka powiadomienia, które odciągają Twoją uwagę od świata rzeczywistego.",
+    quote: "Każde powiadomienie to upomnienie się wirtualnego świata o Twoją uwagę.",
     textAnchor: "end",
     dx: -18,
     dy: 4
@@ -34,9 +34,9 @@ const NODES: Node[] = [
     id: "infinite_scroll",
     x: 150,
     y: 200,
-    label: "The Endless Scroll",
-    description: "Scrolling down forever with no natural stopping point. You roll the screen up only for it to reset.",
-    quote: "A digital task that never ends, designed to keep you scrolling forever.",
+    label: "Nieskończone przewijanie",
+    description: "Przewijanie tablicy bez żadnego naturalnego końca. Przesuwasz ekran w górę tylko po to, by za chwilę się zresetował.",
+    quote: "Cyfrowa praca bez końca, zaprojektowana tak, by trzymać Cię przed ekranem na zawsze.",
     textAnchor: "end",
     dx: -18,
     dy: 4
@@ -45,9 +45,9 @@ const NODES: Node[] = [
     id: "validation_seeking",
     x: 150,
     y: 320,
-    label: "Looking for Likes",
-    description: "Checking your phone to see who liked your post or commented, tying your self-worth to numbers.",
-    quote: "We start translating our real moments into posts, hoping someone else approves.",
+    label: "Pogoń za lajkami",
+    description: "Ciągłe sprawdzanie telefonu, by zobaczyć, kto polubił Twój post lub zostawił komentarz. Uzależnianie samooceny od liczb.",
+    quote: "Zeczynamy tłumaczyć nasze realne chwile na posty w nadziei, że ktoś inny je zatwierdzi.",
     textAnchor: "end",
     dx: -18,
     dy: 4
@@ -56,9 +56,9 @@ const NODES: Node[] = [
     id: "dopamine_loop",
     x: 350,
     y: 80,
-    label: "Dopamine Fatigue",
-    description: "When your brain gets tired from a constant drip-feed of unpredictable notifications.",
-    quote: "When feedback is random and constant, it stops feeling rewarding and starts feeling exhausting.",
+    label: "Zmęczenie dopaminowe",
+    description: "Stan, w którym Twój mózg jest wyczerpany ciągłym dopływem nieprzewidywalnych mikro-bodźców z powiadomień.",
+    quote: "Kiedy nagrody są losowe i nieustanne, przestają przynosić satysfakcję, a zaczynają męczyć.",
     textAnchor: "middle",
     dx: 0,
     dy: -20
@@ -67,9 +67,9 @@ const NODES: Node[] = [
     id: "comparison_trap",
     x: 350,
     y: 200,
-    label: "The Comparison Trap",
-    description: "Comparing your messy everyday life with everyone else's highlight reels.",
-    quote: "You see their best days on screen and wonder why your ordinary days feel so dull.",
+    label: "Pułapka porównań",
+    description: "Porównywanie swojego codziennego, pełnego wad życia z wyselekcjonowanymi i idealnymi momentami z profili innych ludzi.",
+    quote: "Widzisz ich najlepsze dni na ekranie i zastanawiasz się, dlaczego Twoja codzienność jest tak szara.",
     textAnchor: "middle",
     dx: 0,
     dy: -20
@@ -78,9 +78,9 @@ const NODES: Node[] = [
     id: "curation_burden",
     x: 350,
     y: 320,
-    label: "The Online Avatar",
-    description: "The constant job of maintaining a polished online version of yourself.",
-    quote: "The profile needs updates. We begin working for our avatar instead of just living.",
+    label: "Cyfrowy awatar",
+    description: "Ciągły wysiłek wkładany w utrzymanie idealnej, cyfrowej wersji samego siebie w sieci.",
+    quote: "Profil wymaga ciągłej opieki. Zaczynamy pracować dla swojego cyfrowego awatara zamiast po prostu żyć.",
     textAnchor: "middle",
     dx: 0,
     dy: 26
@@ -89,9 +89,9 @@ const NODES: Node[] = [
     id: "burnout",
     x: 550,
     y: 80,
-    label: "Digital Burnout",
-    description: "Exhaustion that comes from voluntarily overworking your brain to stay connected.",
-    quote: "We think we are free to scroll, but we find ourselves unable to stop.",
+    label: "Cyfrowe wypalenie",
+    description: "Skrajne wyczerpanie wynikające z dobrowolnego przeciążania umysłu, by cały czas być online.",
+    quote: "Wydaje nam się, że możemy przewijać tablicę kiedy chcemy, ale w rzeczywistości nie potrafimy przestać.",
     textAnchor: "start",
     dx: 18,
     dy: 4
@@ -100,9 +100,9 @@ const NODES: Node[] = [
     id: "alienation",
     x: 550,
     y: 200,
-    label: "Loneliness in a Crowd",
-    description: "Feeling isolated despite having hundreds of online contacts. You're connected, but untouched.",
-    quote: "Social media gives us virtual proximity, but takes away real, physical presence.",
+    label: "Samotność w tłumie",
+    description: "Uczucie izolacji pomimo posiadania setek kontaktów w sieci. Jesteśmy połączeni, ale pozbawieni dotyku.",
+    quote: "Media społecznościowe dają nam wirtualną bliskość, ale odbierają realną, fizyczną obecność.",
     textAnchor: "start",
     dx: 18,
     dy: 4
@@ -111,9 +111,9 @@ const NODES: Node[] = [
     id: "inauthenticity",
     x: 550,
     y: 320,
-    label: "Living in the Screen",
-    description: "When the online image of your life starts feeling more important than your actual life.",
-    quote: "The image of our life replaces the reality. We exist to feed the profile.",
+    label: "Życie na ekranie",
+    description: "Moment, w którym cyfrowy obraz Twojego życia zaczyna wydawać się ważniejszy niż Twoja codzienna rzeczywistość.",
+    quote: "Obraz naszego życia zastępuje samą rzeczywistość. Istniejemy po to, by karmić profil.",
     textAnchor: "start",
     dx: 18,
     dy: 4
@@ -277,19 +277,19 @@ export const ConceptMap: React.FC<ConceptMapProps> = ({ activeResult }) => {
         ) : activeResult ? (
           <div className="fade-in">
             <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', color: 'var(--accent-sage)', marginBottom: '0.5rem' }}>
-              Your Pathway Highlighted
+              Twój profil został podświetlony
             </h4>
             <p style={{ fontSize: '0.95rem', margin: 0, color: 'var(--text-secondary)' }}>
               {activeResult.profileId === 'anchor' 
-                ? "You have managed to stay grounded! No toxic dependencies or fatigue loops are highlighted. Feel free to hover over individual nodes to inspect potential digital pitfalls."
-                : `Your quiz results have highlighted the loop above. Hover over the active nodes to understand the cognitive progression of your digital experience.`
+                ? "Udało Ci się zachować równowagę! Żadne toksyczne pętle ani zależności nie zostały podświetlone. Możesz najechać kursorem na poszczególne węzły, by poznać potencjalne zagrożenia."
+                : `Twój wynik quizu podświetlił powyższą pętlę. Najedź na aktywne węzły, by zrozumieć etapy cyfrowego zmęczenia.`
               }
             </p>
           </div>
         ) : (
           <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }} className="fade-in">
             <p style={{ fontStyle: 'italic', fontSize: '0.95rem', margin: 0 }}>
-              Hover over any node in the map above to explore the connections of digital fatigue, or complete the Quiz above to highlight your specific pathway.
+              Najedź na dowolny węzeł na mapie powyżej, aby zbadać powiązania cyfrowego zmęczenia, lub rozwiąż quiz powyżej, aby podświetlić swoją własną ścieżkę.
             </p>
           </div>
         )}

@@ -20,9 +20,9 @@ function App() {
     <div className="container">
       {/* Header */}
       <header className="app-header fade-in">
-        <h1>Echoes of the Screen</h1>
+        <h1>Echa Ekranu</h1>
         <p className="subtitle">
-          An interactive reflection on screen time, digital fatigue, and finding space to breathe.
+          Interaktywna refleksja o czasie przed ekranem, cyfrowym zmęczeniu i szukaniu przestrzeni na oddech.
         </p>
         <div style={{ marginTop: '2rem' }}>
           <a 
@@ -36,7 +36,7 @@ function App() {
               boxShadow: 'var(--shadow-sm)'
             }}
           >
-            Get Help & Support
+            Uzyskaj pomoc i wsparcie
           </a>
         </div>
         <div className="divider"></div>
@@ -47,13 +47,13 @@ function App() {
         <div className="grid-2">
           <div>
             <h2 style={{ fontSize: '1.8rem', marginBottom: '1.25rem' }}>
-              Why do our screens make us feel like this?
+              Dlaczego ekrany sprawiają, że tak się czujemy?
             </h2>
             <p>
-              It usually starts simple. We open an app because we're bored, lonely, or just looking for a quick distraction. But what starts as a harmless scroll often turns into a cycle that leaves us feeling drained and disconnected.
+              Zaczyna się niewinnie. Otwieramy aplikację, bo się nudzimy, czujemy się samotni lub szukamy chwili rozrywki. Jednak to, co zaczyna się jako nieszkodliwe przewijanie, często przeradza się w pętlę, która wysysa z nas energię i oddala od rzeczywistości.
             </p>
             <p>
-              This project is a space to pause and look at what is happening under the hood. By looking at the connection between how these apps are designed and how we feel, we can begin to understand why digital fatigue and depression happen—and how we can step back.
+              Ten projekt to przestrzeń na zatrzymanie się i spojrzenie pod podszewkę naszych nawyków. Analizując powiązania między sposobem projektowania aplikacji a naszym samopoczuciem, możemy zrozumieć mechanizmy stojące za cyfrowym zmęczeniem i stanami obniżonego nastroju — oraz dowiedzieć się, jak zrobić krok w tył.
             </p>
           </div>
           <div style={{
@@ -67,17 +67,17 @@ function App() {
             boxShadow: 'var(--shadow-sm)'
           }}>
             <h3 style={{ fontSize: '1.3rem', marginBottom: '0.75rem', fontFamily: 'var(--font-serif)' }}>
-              The Story of the Loop
+              Historia Pętli
             </h3>
             <div className="step-story" style={{ fontSize: '0.95rem' }}>
               <p style={{ marginBottom: '0.75rem', color: 'var(--text-secondary)' }}>
-                <strong style={{ color: 'var(--text-primary)' }}>1. The Lure:</strong> We seek quick connection. It's a natural human impulse to want to interact and avoid quiet boredom.
+                <strong style={{ color: 'var(--text-primary)' }}>1. Pokusa:</strong> Szukamy szybkiego kontaktu. Chęć interakcji i ucieczki przed nudą to naturalna ludzka potrzeba.
               </p>
               <p style={{ marginBottom: '0.75rem', color: 'var(--text-secondary)' }}>
-                <strong style={{ color: 'var(--text-primary)' }}>2. The Trap:</strong> We scroll through curated highlight reels, subconsciously comparing our messy everyday lives to everyone else's best moments.
+                <strong style={{ color: 'var(--text-primary)' }}>2. Pułapka:</strong> Przeglądamy idealne tablice innych, podświadomie porównując naszą zwykłą codzienność z wyselekcjonowanymi, najlepszymi momentami z cudzego życia.
               </p>
               <p style={{ marginBottom: 0, color: 'var(--text-secondary)' }}>
-                <strong style={{ color: 'var(--text-primary)' }}>3. The Fatigue:</strong> We start editing our own online "avatar" to get approval. We voluntarily work for the profile, which drains our energy and creates digital burnout.
+                <strong style={{ color: 'var(--text-primary)' }}>3. Zmęczenie:</strong> Zaczynamy dopieszczać własnego cyfrowego awatara, by zyskać aprobatę. Dobrowolnie pracujemy na rzecz swojego profilu, co wyczerpuje nas psychicznie i prowadzi do cyfrowego wypalenia.
               </p>
             </div>
           </div>
@@ -87,17 +87,17 @@ function App() {
       {/* Quote Block */}
       <div className="quote-section fade-in">
         <blockquote className="quote-text">
-          &ldquo;We live in a world where there is more and more information, and less and less meaning.&rdquo;
+          &ldquo;Żyjemy w świecie, w którym jest coraz więcej informacji, a coraz mniej znaczenia.&rdquo;
         </blockquote>
-        <cite className="quote-author">— Jean Baudrillard, Simulacra and Simulation</cite>
+        <cite className="quote-author">— Jean Baudrillard, Symulakry i symulacja</cite>
       </div>
 
       {/* Interactive Questionnaire */}
       <section className="section" id="diagnostics">
         <div className="section-title-wrap">
-          <h2 className="section-title">1. Check Yourself (Quick Quiz)</h2>
+          <h2 className="section-title">1. Sprawdź siebie (Szybki quiz)</h2>
           <p className="section-subtitle">
-            Answer these simple questions to reflect on your digital habits and see where you stand on the digital fatigue spectrum.
+            Odpowiedz na kilka prostych pytań, aby przyjrzeć się swoim nawykom i sprawdzić, gdzie na skali cyfrowego zmęczenia się znajdujesz.
           </p>
         </div>
         <div className="quiz-container">
@@ -112,9 +112,9 @@ function App() {
       {/* Behavioral Concept Map */}
       <section className="section" id="network">
         <div className="section-title-wrap">
-          <h2 className="section-title">2. How the Loop Works (Concept Map)</h2>
+          <h2 className="section-title">2. Jak działa ta pętla (Mapa pojęć)</h2>
           <p className="section-subtitle">
-            Hover over nodes to explore how screen-time habits feed into cognitive loops, eventually leading to digital fatigue or isolation.
+            Najedź kursorem na poszczególne węzły, aby zbadać, jak codzienne nawyki przed ekranem tworzą pętle wpływające na samopoczucie i wyobcowanie.
           </p>
         </div>
         <ConceptMap activeResult={quizResult} />
@@ -123,9 +123,9 @@ function App() {
       {/* Focus Sanctuary (Soma Room) */}
       <section className="section" id="sanctuary">
         <div className="section-title-wrap">
-          <h2 className="section-title">3. The Break Room (Unwind Space)</h2>
+          <h2 className="section-title">3. Pokój wytchnienia (Strefa relaksu)</h2>
           <p className="section-subtitle">
-            A quiet space to detach from the scroll. Practice breathing, listen to relaxing soundscapes, or play our short audio talks.
+            Cicha przestrzeń na odcięcie się od ciągłego przewijania. Przećwicz oddech, posłuchaj wyciszających pejzaży dźwiękowych lub włącz jedną z naszych krótkich rozmów.
           </p>
         </div>
         <FocusSpace />
@@ -134,9 +134,9 @@ function App() {
       {/* Grounding Practices */}
       <section className="section">
         <div className="section-title-wrap">
-          <h2 className="section-title">4. Small Daily Steps</h2>
+          <h2 className="section-title">4. Małe codzienne kroki</h2>
           <p className="section-subtitle">
-            Simple, practical ideas based on philosophical wisdom to help you reclaim your focus and presence.
+            Proste, praktyczne wskazówki inspirowane filozofią, które pomogą Ci odzyskać uważność i obecność tu i teraz.
           </p>
         </div>
         <div className="rec-grid">
@@ -144,9 +144,9 @@ function App() {
             <div className="rec-icon">
               <Shield size={20} />
             </div>
-            <h4 className="rec-title">Attention Quarantine</h4>
+            <h4 className="rec-title">Kwarantanna uwagi</h4>
             <p>
-              Designate a physical boundary in your home (like your desk or bed) where screens are completely prohibited. Keep this space screens-free.
+              Wyznacz w domu wyraźną granicę (np. biurko lub łóżko), za którą nie wnosisz żadnych urządzeń z ekranami. Zachowaj tę strefę całkowicie offline.
             </p>
           </div>
 
@@ -154,9 +154,9 @@ function App() {
             <div className="rec-icon">
               <Sparkles size={20} />
             </div>
-            <h4 className="rec-title">Radical Boredom</h4>
+            <h4 className="rec-title">Radykalna nuda</h4>
             <p>
-              Commit to 5 or 10 minutes of complete silence each day with no phone, music, or stimulation. Let your mind settle down.
+              Poświęć 5 do 10 minut dziennie na całkowitą ciszę bez telefonu, muzyki i jakichkolwiek bodźców. Pozwól swojemu umysłowi odpocząć.
             </p>
           </div>
 
@@ -164,9 +164,9 @@ function App() {
             <div className="rec-icon">
               <BookOpen size={20} />
             </div>
-            <h4 className="rec-title">Analog Anchors</h4>
+            <h4 className="rec-title">Analogowe kotwice</h4>
             <p>
-              Replace one daily digital habit with a physical version. Write in a paper notebook, read a printed book, or go for a walk phone-free.
+              Zastąp jeden cyfrowy nawyk jego fizyczną wersją. Pisz w papierowym notesie, czytaj papierowe książki lub idź na spacer bez telefonu.
             </p>
           </div>
         </div>
@@ -175,16 +175,16 @@ function App() {
       {/* Watch More Section */}
       <section className="section" id="watch">
         <div className="section-title-wrap">
-          <h2 className="section-title">5. Watch More</h2>
+          <h2 className="section-title">5. Zobacz więcej</h2>
           <p className="section-subtitle">
-            Thoughtful video essays that explain the psychology and philosophy of digital burnout and loneliness in simple terms.
+            Wartościowe eseje wideo, które w prosty sposób wyjaśniają psychologiczne i filozoficzne aspekty cyfrowego wypalenia i samotności.
           </p>
         </div>
         <div className="grid-2">
           <div className="card" style={{ padding: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem', fontFamily: 'var(--font-serif)' }}>Why We're All Burning Out</h3>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem', fontFamily: 'var(--font-serif)' }}>Dlaczego wszyscy się wypalamy</h3>
             <p style={{ fontSize: '0.9rem', marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>
-              A video essay by Einzelgänger breaking down the ideas of philosopher Byung-Chul Han, showing how we exhaust ourselves in search of achievement and validation.
+              Esej wideo autorstwa Einzelgänger przybliżający idee filozofa Byung-Chul Hana, pokazujący, jak sami się wyczerpujemy w pogoni za sukcesem i aprobatą.
             </p>
             <div className="video-container">
               <iframe 
@@ -198,9 +198,9 @@ function App() {
           </div>
 
           <div className="card" style={{ padding: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem', fontFamily: 'var(--font-serif)' }}>Understanding Loneliness</h3>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem', fontFamily: 'var(--font-serif)' }}>Zrozumieć samotność</h3>
             <p style={{ fontSize: '0.9rem', marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>
-              An animated explanation by Kurzgesagt exploring the evolutionary roots of loneliness and how hyper-connectivity online often leaves us feeling more isolated.
+              Animowane wyjaśnienie od Kurzgesagt badające ewolucyjne korzenie samotności oraz to, jak cyfrowa hiper-łączność w sieci często pogłębia nasze poczucie izolacji.
             </p>
             <div className="video-container">
               <iframe 
@@ -218,48 +218,48 @@ function App() {
       {/* Read More Section */}
       <section className="section" id="read">
         <div className="section-title-wrap">
-          <h2 className="section-title">6. Read More</h2>
+          <h2 className="section-title">6. Dowiedz się więcej</h2>
           <p className="section-subtitle">
-            If you want to read more about the ideas behind this project, here are the core texts and local studies we drew from.
+            Jeśli chcesz dowiedzieć się więcej o pojęciach leżących u podstaw tego projektu, poniżej znajdziesz książki oraz badania krajowe, z których korzystaliśmy.
           </p>
         </div>
         <div className="library-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
           <div className="card lib-card">
             <div>
-              <span className="lib-concept">National Report (Poland)</span>
-              <h3 className="lib-title">MŁODE GŁOWY Study</h3>
+              <span className="lib-concept">Ogólnopolski Raport</span>
+              <h3 className="lib-title">Badanie MŁODE GŁOWY</h3>
               <p className="lib-desc">
-                A massive study of over 180,000 students in Poland by the UNAWEZA Foundation. It highlights a critical mental health crisis, showing that 1 in 2 young people suffer from extremely low self-esteem, fueled by social media comparison, cyberbullying, and FOMO.
+                Przełomowe ogólnopolskie badanie ponad 180 tysięcy uczniów przeprowadzone przez Fundację UNAWEZA. Wskazuje na dramatyczną kondycję psychiczną młodzieży w Polsce — co drugi młody człowiek ma skrajnie niską samoocenę wywołaną m.in. porównywaniem się w sieci, hejtem oraz lękiem przed wykluczeniem (FOMO).
               </p>
             </div>
             <a href="https://mlodeglowy.pl" target="_blank" rel="noopener noreferrer" className="lib-link">
-              Visit mlodeglowy.pl <ExternalLink size={14} />
+              Odwiedź stronę mlodeglowy.pl <ExternalLink size={14} />
             </a>
           </div>
 
           <div className="card lib-card">
             <div>
               <span className="lib-concept">Byung-Chul Han</span>
-              <h3 className="lib-title">The Fatigue Society</h3>
+              <h3 className="lib-title">Społeczeństwo zmęczenia</h3>
               <p className="lib-desc">
-                Han explains that modern society makes us believe we are free, yet we voluntarily self-exploit to achieve optimization, visibility, and validation, causing a deep \"tiredness of the soul.\"
+                Byung-Chul Han wyjaśnia, że współczesne społeczeństwo mami nas poczuciem wolności, podczas gdy w rzeczywistości dobrowolnie eksploatujemy samych siebie, dążąc do ciągłego doskonalenia, widoczności i poklasku.
               </p>
             </div>
             <a href="https://en.wikipedia.org/wiki/Byung-Chul_Han" target="_blank" rel="noopener noreferrer" className="lib-link">
-              Read Theory Details <ExternalLink size={14} />
+              Przeczytaj opis teorii <ExternalLink size={14} />
             </a>
           </div>
 
           <div className="card lib-card">
             <div>
               <span className="lib-concept">Jean Baudrillard</span>
-              <h3 className="lib-title">Simulacra & Simulation</h3>
+              <h3 className="lib-title">Symulakry i symulacja</h3>
               <p className="lib-desc">
-                Baudrillard argues that screens replace our actual lives with symbols and representations. Our online profiles become more \"real\" (hyperreal) to others than our physical day-to-day existence.
+                Jean Baudrillard twierdzi, że ekrany zastępują nasze realne życie znakami i reprezentacjami. Nasze profile online stają się dla innych bardziej \"rzeczywiste\" (hiperrealne) niż nasza codzienna, fizyczna egzystencja.
               </p>
             </div>
             <a href="https://en.wikipedia.org/wiki/Simulacra_and_Simulation" target="_blank" rel="noopener noreferrer" className="lib-link">
-              Explore Hyperreality <ExternalLink size={14} />
+              Odkryj pojęcie hiperrzeczywistości <ExternalLink size={14} />
             </a>
           </div>
         </div>
@@ -268,41 +268,41 @@ function App() {
       {/* Get Help Section */}
       <section className="section" id="help" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '5rem' }}>
         <div className="section-title-wrap">
-          <h2 className="section-title" style={{ color: 'var(--accent-clay)' }}>7. Get Help & Support</h2>
+          <h2 className="section-title" style={{ color: 'var(--accent-clay)' }}>7. Pomoc i wsparcie</h2>
           <p className="section-subtitle">
-            If you or someone you know is struggling with digital fatigue, isolation, or depression, please reach out to these support resources. You are not alone.
+            Jeśli Ty lub ktoś z Twojego otoczenia zmaga się z cyfrowym przeciążeniem, izolacją lub stanami depresyjnymi, skorzystaj z poniższych punktów wsparcia. Nie jesteś sam.
           </p>
         </div>
         <div className="grid-2">
           <div className="card" style={{ borderLeft: '4px solid var(--accent-clay)' }}>
-            <span className="lib-concept" style={{ color: 'var(--accent-clay)' }}>For Youth (Poland)</span>
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontFamily: 'var(--font-serif)' }}>Helpline 116 111</h3>
+            <span className="lib-concept" style={{ color: 'var(--accent-clay)' }}>Dla młodzieży (Polska)</span>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontFamily: 'var(--font-serif)' }}>Telefon Zaufania 116 111</h3>
             <p style={{ fontSize: '0.95rem', marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>
-              A free, anonymous support helpline run by <strong>Fundacja Dajemy Dzieciom Siłę</strong> for children and teenagers. Available 24/7.
+              Bezpłatny, anonimowy telefon zaufania dla dzieci i młodzieży prowadzony przez <strong>Fundację Dajemy Dzieciom Siłę</strong>. Działa całodobowo przez 7 dni w tygodniu.
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-              <a href="tel:116111" className="btn-primary" style={{ textDecoration: 'none' }}>Call 116 111</a>
-              <a href="https://116111.pl" target="_blank" rel="noopener noreferrer" className="lib-link" style={{ margin: 0 }}>Visit 116111.pl <ExternalLink size={14} /></a>
+              <a href="tel:116111" className="btn-primary" style={{ textDecoration: 'none' }}>Zadzwoń pod 116 111</a>
+              <a href="https://116111.pl" target="_blank" rel="noopener noreferrer" className="lib-link" style={{ margin: 0 }}>Odwiedź 116111.pl <ExternalLink size={14} /></a>
             </div>
           </div>
 
           <div className="card" style={{ borderLeft: '4px solid var(--accent-sage)' }}>
-            <span className="lib-concept" style={{ color: 'var(--accent-sage)' }}>Campaign & Support</span>
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontFamily: 'var(--font-serif)' }}>Twarze Depresji</h3>
+            <span className="lib-concept" style={{ color: 'var(--accent-sage)' }}>Kampanie i pomoc</span>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', fontFamily: 'var(--font-serif)' }}>Fundacja Twarze Depresji</h3>
             <p style={{ fontSize: '0.95rem', marginBottom: '1.5rem', color: 'var(--text-secondary)' }}>
-              The <strong>Faces of Depression Foundation</strong> provides educational materials, anti-stigma campaigns, and access to free psychological consultations.
+              Fundacja prowadzi kampanie edukacyjne, przeciwdziała stygmatyzacji osób w kryzysie psychicznym oraz organizuje bezpłatną pomoc psychologiczną.
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-              <a href="https://twarzedepresji.pl" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ textDecoration: 'none', backgroundColor: 'var(--accent-sage)' }}>Get Support</a>
+              <a href="https://twarzedepresji.pl" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ textDecoration: 'none', backgroundColor: 'var(--accent-sage)' }}>Uzyskaj pomoc</a>
             </div>
           </div>
         </div>
 
         <div className="card" style={{ marginTop: '2rem', borderLeft: '4px solid var(--text-secondary)' }}>
-          <span className="lib-concept">For Adults (Poland)</span>
-          <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>Crisis Helpline 116 123</h3>
+          <span className="lib-concept">Dla dorosłych (Polska)</span>
+          <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>Kryzysowy Telefon Zaufania 116 123</h3>
           <p style={{ fontSize: '0.95rem', margin: 0, color: 'var(--text-secondary)' }}>
-            A free helpline for adults experiencing psychological crisis, emotional distress, or depression. Available daily from 14:00 to 22:00. Call <a href="tel:116123" style={{ color: 'var(--accent-clay)', fontWeight: 600, textDecoration: 'none' }}>116 123</a>.
+            Bezpłatna infolinia dla osób dorosłych w kryzysie emocjonalnym, zmagających się z trudnościami lub depresją. Dostępny codziennie w godzinach 14:00 - 22:00. Zadzwoń pod numer <a href="tel:116123" style={{ color: 'var(--accent-clay)', fontWeight: 600, textDecoration: 'none' }}>116 123</a>.
           </p>
         </div>
       </section>
@@ -310,13 +310,13 @@ function App() {
       {/* Footer */}
       <footer className="app-footer">
         <div className="app-footer-links">
-          <a href="#diagnostics">Reflection Quiz</a>
-          <a href="#network">Dependency Map</a>
-          <a href="#sanctuary">Sanctuary Room</a>
-          <a href="#help">Get Help</a>
+          <a href="#diagnostics">Quiz refleksyjny</a>
+          <a href="#network">Mapa pętli</a>
+          <a href="#sanctuary">Strefa relaksu</a>
+          <a href="#help">Uzyskaj pomoc</a>
         </div>
-        <p style={{ marginBottom: '0.5rem', fontSize: '0.85rem' }}>A Student Term Project by Mikita Mikado in Practical Philosophy & Digital Ethics.</p>
-        <p style={{ fontSize: '0.85rem' }}>© {new Date().getFullYear()} Mikita Mikado. Echoes of the Screen.</p>
+        <p style={{ marginBottom: '0.5rem', fontSize: '0.85rem' }}>Projekt semestralny studenta Mikity Mikado w ramach Praktycznej Filozofii i Etyki Cyfrowej.</p>
+        <p style={{ fontSize: '0.85rem' }}>© {new Date().getFullYear()} Mikita Mikado. Echa Ekranu.</p>
       </footer>
     </div>
   );
