@@ -316,7 +316,7 @@ function App() {
           <a href="#help">Uzyskaj pomoc</a>
         </div>
         <p style={{ marginBottom: '0.5rem', fontSize: '0.85rem' }}>Projekt semestralny studenta Mikity Mikado w ramach Praktycznej Filozofii i Etyki Cyfrowej.</p>
-        <p style={{ fontSize: '0.85rem' }}>© {new Date().getFullYear()} Mikita Mikado. Echa Ekranu.</p>
+        <p style={{ fontSize: '0.85rem' }}>© {new Date().getFullYear()} Mykyta Stetsenko. Echa Ekranu.</p>
       </footer>
     </div>
   );
