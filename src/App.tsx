@@ -16,6 +16,27 @@ function App() {
     setQuizResult(null);
   };
 
+  const [email, setEmail] = useState('');
+  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !email.includes('@')) {
+      alert("Proszę podać poprawny adres e-mail.");
+      return;
+    }
+    
+    // Trigger the file download
+    const link = document.createElement('a');
+    link.href = '/cyfrowy_detoks_przewodnik.pdf';
+    link.download = 'cyfrowy_detoks_przewodnik.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    setNewsletterSubmitted(true);
+  };
+
   return (
     <div className="container">
       {/* Header */}
@@ -307,16 +328,51 @@ function App() {
         </div>
       </section>
 
+      {/* Newsletter Section */}
+      <section className="section" id="newsletter" style={{ marginBottom: '5rem' }}>
+        <div className="newsletter-card fade-in">
+          <span className="lib-concept" style={{ color: 'var(--accent-clay)' }}>Materiały dodatkowe</span>
+          <h2 className="section-title" style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>Pobierz Przewodnik po Cyfrowym Detoksie</h2>
+          <p style={{ maxWidth: '600px', margin: '0 auto 2rem', fontSize: '0.95rem' }}>
+            Zapisz się do naszego biuletynu cyfrowej refleksji. Po podaniu adresu e-mail otrzymasz natychmiastowy dostęp do naszego 3-stronicowego przewodnika PDF z 5-dniowym wyzwaniem uziemienia.
+          </p>
+
+          {!newsletterSubmitted ? (
+            <form onSubmit={handleNewsletterSubmit} className="newsletter-form">
+              <input 
+                type="email" 
+                placeholder="Twój adres e-mail" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="newsletter-input"
+              />
+              <button type="submit" className="btn-primary">
+                Zapisz się i pobierz PDF
+              </button>
+            </form>
+          ) : (
+            <div className="newsletter-success fade-in" style={{ backgroundColor: 'var(--accent-sage-light)', padding: '1.5rem', borderRadius: 'var(--radius-sm)', borderLeft: '4px solid var(--accent-sage)', textAlign: 'left', maxWidth: '600px', margin: '0 auto' }}>
+              <h4 style={{ fontFamily: 'var(--font-serif)', marginBottom: '0.5rem', color: 'var(--text-primary)', fontWeight: 600 }}>Dziękujemy za zapis!</h4>
+              <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                Twój Przewodnik po Cyfrowym Detoksie powinien pobrać się automatycznie. Jeśli pobieranie nie rozpoczęło się, <a href="/cyfrowy_detoks_przewodnik.pdf" download style={{ color: 'var(--accent-clay)', fontWeight: 600, textDecoration: 'underline' }}>kliknij tutaj, aby pobrać go ręcznie</a>.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="app-footer">
         <div className="app-footer-links">
           <a href="#diagnostics">Quiz refleksyjny</a>
           <a href="#network">Mapa pętli</a>
           <a href="#sanctuary">Strefa relaksu</a>
+          <a href="#newsletter">Newsletter</a>
           <a href="#help">Uzyskaj pomoc</a>
         </div>
         <p style={{ marginBottom: '0.5rem', fontSize: '0.85rem' }}>Projekt semestralny studenta Mikity Mikado w ramach Praktycznej Filozofii i Etyki Cyfrowej.</p>
-        <p style={{ fontSize: '0.85rem' }}>© {new Date().getFullYear()} Mykyta Stetsenko. Echa Ekranu.</p>
+        <p style={{ fontSize: '0.85rem' }}>© {new Date().getFullYear()} Mikita Mikado. Echa Ekranu.</p>
       </footer>
     </div>
   );
