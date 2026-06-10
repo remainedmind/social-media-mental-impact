@@ -1,19 +1,13 @@
 import React, { useState } from 'react';
 import type { QuizResult } from '../utils/quizUtils';
-import { useTranslation } from '../contexts/TranslationContext';
-import type { TranslationKey } from '../utils/translations';
-
-interface ConceptMapProps {
-  activeResult: QuizResult | null;
-}
 
 interface Node {
   id: string;
   x: number;
   y: number;
-  labelKey: TranslationKey;
-  descriptionKey: TranslationKey;
-  quoteKey: TranslationKey;
+  label: string;
+  description: string;
+  quote: string;
   textAnchor: 'inherit' | 'end' | 'start' | 'middle';
   dx: number;
   dy: number;
@@ -29,9 +23,9 @@ const NODES: Node[] = [
     id: "notifications",
     x: 150,
     y: 80,
-    labelKey: "map.n1L",
-    descriptionKey: "map.n1D",
-    quoteKey: "map.n1Q",
+    label: "Constant Pings",
+    description: "Every ding, buzz, and red dot that pulls your focus away from the real world.",
+    quote: "Every notification is a reminder of a virtual world demanding your attention.",
     textAnchor: "end",
     dx: -18,
     dy: 4
@@ -40,9 +34,9 @@ const NODES: Node[] = [
     id: "infinite_scroll",
     x: 150,
     y: 200,
-    labelKey: "map.n2L",
-    descriptionKey: "map.n2D",
-    quoteKey: "map.n2Q",
+    label: "The Endless Scroll",
+    description: "Scrolling down forever with no natural stopping point. You roll the screen up only for it to reset.",
+    quote: "A digital task that never ends, designed to keep you scrolling forever.",
     textAnchor: "end",
     dx: -18,
     dy: 4
@@ -51,9 +45,9 @@ const NODES: Node[] = [
     id: "validation_seeking",
     x: 150,
     y: 320,
-    labelKey: "map.n3L",
-    descriptionKey: "map.n3D",
-    quoteKey: "map.n3Q",
+    label: "Looking for Likes",
+    description: "Checking your phone to see who liked your post or commented, tying your self-worth to numbers.",
+    quote: "We start translating our real moments into posts, hoping someone else approves.",
     textAnchor: "end",
     dx: -18,
     dy: 4
@@ -62,9 +56,9 @@ const NODES: Node[] = [
     id: "dopamine_loop",
     x: 350,
     y: 80,
-    labelKey: "map.n4L",
-    descriptionKey: "map.n4D",
-    quoteKey: "map.n4Q",
+    label: "Dopamine Fatigue",
+    description: "When your brain gets tired from a constant drip-feed of unpredictable notifications.",
+    quote: "When feedback is random and constant, it stops feeling rewarding and starts feeling exhausting.",
     textAnchor: "middle",
     dx: 0,
     dy: -20
@@ -73,9 +67,9 @@ const NODES: Node[] = [
     id: "comparison_trap",
     x: 350,
     y: 200,
-    labelKey: "map.n5L",
-    descriptionKey: "map.n5D",
-    quoteKey: "map.n5Q",
+    label: "The Comparison Trap",
+    description: "Comparing your messy everyday life with everyone else's highlight reels.",
+    quote: "You see their best days on screen and wonder why your ordinary days feel so dull.",
     textAnchor: "middle",
     dx: 0,
     dy: -20
@@ -84,9 +78,9 @@ const NODES: Node[] = [
     id: "curation_burden",
     x: 350,
     y: 320,
-    labelKey: "map.n6L",
-    descriptionKey: "map.n6D",
-    quoteKey: "map.n6Q",
+    label: "The Online Avatar",
+    description: "The constant job of maintaining a polished online version of yourself.",
+    quote: "The profile needs updates. We begin working for our avatar instead of just living.",
     textAnchor: "middle",
     dx: 0,
     dy: 26
@@ -95,9 +89,9 @@ const NODES: Node[] = [
     id: "burnout",
     x: 550,
     y: 80,
-    labelKey: "map.n7L",
-    descriptionKey: "map.n7D",
-    quoteKey: "map.n7Q",
+    label: "Digital Burnout",
+    description: "Exhaustion that comes from voluntarily overworking your brain to stay connected.",
+    quote: "We think we are free to scroll, but we find ourselves unable to stop.",
     textAnchor: "start",
     dx: 18,
     dy: 4
@@ -106,9 +100,9 @@ const NODES: Node[] = [
     id: "alienation",
     x: 550,
     y: 200,
-    labelKey: "map.n8L",
-    descriptionKey: "map.n8D",
-    quoteKey: "map.n8Q",
+    label: "Loneliness in a Crowd",
+    description: "Feeling isolated despite having hundreds of online contacts. You're connected, but untouched.",
+    quote: "Social media gives us virtual proximity, but takes away real, physical presence.",
     textAnchor: "start",
     dx: 18,
     dy: 4
@@ -117,9 +111,9 @@ const NODES: Node[] = [
     id: "inauthenticity",
     x: 550,
     y: 320,
-    labelKey: "map.n9L",
-    descriptionKey: "map.n9D",
-    quoteKey: "map.n9Q",
+    label: "Living in the Screen",
+    description: "When the online image of your life starts feeling more important than your actual life.",
+    quote: "The image of our life replaces the reality. We exist to feed the profile.",
     textAnchor: "start",
     dx: 18,
     dy: 4
@@ -139,8 +133,11 @@ const LINKS: Link[] = [
   { source: "dopamine_loop", target: "alienation" }
 ];
 
+interface ConceptMapProps {
+  activeResult: QuizResult | null;
+}
+
 export const ConceptMap: React.FC<ConceptMapProps> = ({ activeResult }) => {
-  const { t } = useTranslation();
   const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
 
   // Derived state: calculate active highlights directly from activeResult during render
@@ -244,7 +241,7 @@ export const ConceptMap: React.FC<ConceptMapProps> = ({ activeResult }) => {
                 onMouseLeave={handleNodeMouseLeave}
               >
                 <circle r="12" />
-                <text dx={node.dx} dy={node.dy} textAnchor={node.textAnchor}>{t(node.labelKey)}</text>
+                <text dx={node.dx} dy={node.dy} textAnchor={node.textAnchor}>{node.label}</text>
               </g>
             );
           })}
@@ -268,31 +265,31 @@ export const ConceptMap: React.FC<ConceptMapProps> = ({ activeResult }) => {
         {hoveredNode ? (
           <div className="fade-in">
             <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', color: 'var(--accent-clay)', marginBottom: '0.5rem' }}>
-              {t(hoveredNode.labelKey)}
+              {hoveredNode.label}
             </h4>
             <p style={{ fontSize: '0.95rem', margin: '0 0 0.5rem 0', color: 'var(--text-primary)' }}>
-              {t(hoveredNode.descriptionKey)}
+              {hoveredNode.description}
             </p>
             <p style={{ fontStyle: 'italic', fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0 }}>
-              &ldquo;{t(hoveredNode.quoteKey)}&rdquo;
+              &ldquo;{hoveredNode.quote}&rdquo;
             </p>
           </div>
         ) : activeResult ? (
           <div className="fade-in">
             <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', color: 'var(--accent-sage)', marginBottom: '0.5rem' }}>
-              {t('map.msgTitleAnchor')}
+              Your Pathway Highlighted
             </h4>
             <p style={{ fontSize: '0.95rem', margin: 0, color: 'var(--text-secondary)' }}>
               {activeResult.profileId === 'anchor' 
-                ? t('map.msgDescAnchor')
-                : t('map.msgDescActive')
+                ? "You have managed to stay grounded! No toxic dependencies or fatigue loops are highlighted. Feel free to hover over individual nodes to inspect potential digital pitfalls."
+                : `Your quiz results have highlighted the loop above. Hover over the active nodes to understand the cognitive progression of your digital experience.`
               }
             </p>
           </div>
         ) : (
           <div style={{ textAlign: 'center', color: 'var(--text-secondary)' }} className="fade-in">
             <p style={{ fontStyle: 'italic', fontSize: '0.95rem', margin: 0 }}>
-              {t('map.msgDefault')}
+              Hover over any node in the map above to explore the connections of digital fatigue, or complete the Quiz above to highlight your specific pathway.
             </p>
           </div>
         )}

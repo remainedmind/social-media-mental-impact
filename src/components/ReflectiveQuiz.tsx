@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { getResultFromScore } from '../utils/quizUtils';
 import type { QuizResult } from '../utils/quizUtils';
+import { useTranslation } from '../contexts/TranslationContext';
+import type { TranslationKey } from '../utils/translations';
 
 interface ReflectiveQuizProps {
   onComplete: (result: QuizResult) => void;
@@ -8,151 +10,142 @@ interface ReflectiveQuizProps {
   savedResult: QuizResult | null;
 }
 
-interface Question {
-  id: number;
-  text: string;
-  options: {
-    text: string;
-    score: number;
-  }[];
-}
-
-const QUESTIONS: Question[] = [
-  {
-    id: 1,
-    text: "Co najczęściej skłania Cię do otwarcia aplikacji społecznościowej?",
-    options: [
-      { text: "Mam konkretny powód — np. chcę napisać do znajomego lub sprawdzić określoną informację.", score: 1 },
-      { text: "Zwykła ciekawość. Chcę zobaczyć, czy pojawiło się coś interesującego.", score: 2 },
-      { text: "Czysta pamięć mięśniowa. Moje palce same klikają ikonę, zanim w ogóle pomyślę.", score: 3 },
-      { text: "Nawyk wywołany niepokojem. Czuję się niespokojnie lub nudzę się i szukam szybkiego rozproszenia.", score: 4 }
-    ]
-  },
-  {
-    id: 2,
-    text: "Jak się czujesz po przewijaniu tablicy przez ponad 30 minut?",
-    options: [
-      { text: "Dobrze. Dowiedziałem się, co u znajomych lub przeczytałem coś ciekawego i czuję satysfakcję.", score: 1 },
-      { text: "Trochę zmęczony, ale bez problemu potrafię zamknąć aplikację i zająć się czymś innym.", score: 2 },
-      { text: "Podekscytowany, ale niespokojny. Czuję, że muszę przewijać dalej, by znaleźć więcej.", score: 3 },
-      { text: "Wyczerpany i pusty. Czuję się dziwnie odcięty od rzeczywistości i pokoju, w którym siedzę.", score: 4 }
-    ]
-  },
-  {
-    id: 3,
-    text: "Jak wizerunek Twojej osoby w sieci ma się do tego, co naprawdę czujesz w środku?",
-    options: [
-      { text: "Są tacy sami. Rzadko coś publikuję, a kiedy to robię, po prostu jestem sobą.", score: 1 },
-      { text: "W ogóle nic nie publikuję. Jestem tu tylko po to, by obserwować.", score: 2 },
-      { text: "Staram się zachować autentyczność, ale to wciąż przypomina wyreżyserowany występ.", score: 3 },
-      { text: "Mój profil to mocno upiększona wersja mojego życia. Ukrywam wszelkie prawdziwe problemy.", score: 4 }
-    ]
-  },
-  {
-    id: 4,
-    text: "Kiedy próbujesz czytać książkę, oglądać film lub po prostu posiedzieć w ciszy, czy telefon Cię rozprasza?",
-    options: [
-      { text: "Rzadko. Z łatwością potrafię zaangażować się w spokojne zajęcia offline.", score: 1 },
-      { text: "Czasami, ale potrafię zignorować powiadomienia i skupić się na tym, co robię.", score: 2 },
-      { text: "Często. Czuję ciągłą pokusę sprawdzania telefonu, nawet jeśli nie ma tam nic pilnego.", score: 3 },
-      { text: "Nieustannie. Mam problem z przeczytaniem chociażby strony lub posiedzeniem w ciszy bez patrzenia na ekran.", score: 4 }
-    ]
-  },
-  {
-    id: 5,
-    text: "Jak się czujesz, gdy oglądasz posty znajomych lub influencerów?",
-    options: [
-      { text: "Dobrze lub neutralnie. Rozmawiam z nimi i czuję autentyczną więź.", score: 1 },
-      { text: "Rozbawiony. Oglądam ich życie jako formę nieszkodliwej rozrywki.", score: 2 },
-      { text: "Lekko poirytowany lub cyniczny. Denerwuje mnie, jak bardzo sztuczne i na pokaz są te posty.", score: 3 },
-      { text: "Niepewnie. Oglądanie ich idealnego życia sprawia, że czuję, jakbym zostawał w tyle.", score: 4 }
-    ]
-  }
-];
-
 export const ReflectiveQuiz: React.FC<ReflectiveQuizProps> = ({ onComplete, onReset, savedResult }) => {
+  const { t } = useTranslation();
   const [currentIdx, setCurrentIdx] = useState(0);
+  const [scores, setScores] = useState<number[]>([]);
   const [selectedScore, setSelectedScore] = useState<number | null>(null);
-  const [totalScore, setTotalScore] = useState(0);
+
+  // We map the questions using the translation function so they update reactively
+  const QUESTIONS = [
+    {
+      id: 1,
+      text: t('quiz.q1Text'),
+      options: [
+        { text: t('quiz.q1a1'), score: 1 },
+        { text: t('quiz.q1a2'), score: 2 },
+        { text: t('quiz.q1a3'), score: 3 },
+        { text: t('quiz.q1a4'), score: 4 }
+      ]
+    },
+    {
+      id: 2,
+      text: t('quiz.q2Text'),
+      options: [
+        { text: t('quiz.q2a1'), score: 1 },
+        { text: t('quiz.q2a2'), score: 2 },
+        { text: t('quiz.q2a3'), score: 3 },
+        { text: t('quiz.q2a4'), score: 4 }
+      ]
+    },
+    {
+      id: 3,
+      text: t('quiz.q3Text'),
+      options: [
+        { text: t('quiz.q3a1'), score: 1 },
+        { text: t('quiz.q3a2'), score: 2 },
+        { text: t('quiz.q3a3'), score: 3 },
+        { text: t('quiz.q3a4'), score: 4 }
+      ]
+    },
+    {
+      id: 4,
+      text: t('quiz.q4Text'),
+      options: [
+        { text: t('quiz.q4a1'), score: 1 },
+        { text: t('quiz.q4a2'), score: 2 },
+        { text: t('quiz.q4a3'), score: 3 },
+        { text: t('quiz.q4a4'), score: 4 }
+      ]
+    },
+    {
+      id: 5,
+      text: t('quiz.q5Text'),
+      options: [
+        { text: t('quiz.q5a1'), score: 1 },
+        { text: t('quiz.q5a2'), score: 2 },
+        { text: t('quiz.q5a3'), score: 3 },
+        { text: t('quiz.q5a4'), score: 4 }
+      ]
+    }
+  ];
 
   const handleNext = () => {
     if (selectedScore === null) return;
     
-    const newTotal = totalScore + selectedScore;
-    setTotalScore(newTotal);
-
+    const newScores = [...scores, selectedScore];
+    
     if (currentIdx < QUESTIONS.length - 1) {
-      setCurrentIdx(currentIdx + 1);
+      setScores(newScores);
       setSelectedScore(null);
+      setCurrentIdx(currentIdx + 1);
     } else {
-      const finalResult = getResultFromScore(newTotal);
-      onComplete(finalResult);
+      // Calculate final
+      const totalScore = newScores.reduce((a, b) => a + b, 0);
+      onComplete(getResultFromScore(totalScore));
     }
   };
-
-  const handleSelect = (score: number) => {
-    setSelectedScore(score);
-  };
-
-  const currentQuestion = QUESTIONS[currentIdx];
-  const progressPercent = ((currentIdx) / QUESTIONS.length) * 100;
 
   if (savedResult) {
     return (
       <div className="quiz-results fade-in">
-        <span className="lib-concept">Twoje cyfrowe odbicie</span>
-        <h3>{savedResult.title}</h3>
-        <p className="description">{savedResult.description}</p>
+        <span className="lib-concept">{t('quiz.uiTag')}</span>
+        <h3>{t(savedResult.titleKey as TranslationKey)}</h3>
+        <p className="description">{t(savedResult.descriptionKey as TranslationKey)}</p>
         
         <div style={{ 
-          backgroundColor: 'var(--accent-sage-light)', 
+          marginTop: '2rem', 
           padding: '1.5rem', 
-          borderRadius: 'var(--radius-sm)', 
+          backgroundColor: 'var(--accent-sage-light)', 
+          borderRadius: 'var(--radius-sm)',
           marginBottom: '2rem',
           borderLeft: '4px solid var(--accent-sage)',
           textAlign: 'left'
         }}>
           <h4 style={{ fontFamily: 'var(--font-serif)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>
-            Idea filozoficzna: {savedResult.philosophicalConcept}
+            {t('quiz.uiPhil')} {t(savedResult.philosophicalConceptKey as TranslationKey)}
           </h4>
           <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-primary)' }}>
-            {savedResult.insight}
+            {t(savedResult.insightKey as TranslationKey)}
           </p>
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button 
-            className="btn-secondary"
             onClick={() => {
               setCurrentIdx(0);
+              setScores([]);
               setSelectedScore(null);
-              setTotalScore(0);
               onReset();
             }}
+            className="btn-secondary"
             style={{ marginTop: 0 }}
           >
-            Reflektuj ponownie
+            {t('quiz.uiBtnAgain')}
           </button>
           <a 
             href="#help" 
             className="btn-primary" 
             style={{ 
               textDecoration: 'none', 
-              display: 'inline-flex', 
-              alignItems: 'center', 
+              display: 'inline-flex',
+              alignItems: 'center',
               justifyContent: 'center',
               fontWeight: 500
             }}
           >
-            Pomoc i wsparcie
+            {t('quiz.uiBtnHelp')}
           </a>
         </div>
       </div>
     );
   }
 
+  const currentQuestion = QUESTIONS[currentIdx];
+  const progressPercent = ((currentIdx) / QUESTIONS.length) * 100;
+
   return (
-    <div className="quiz-card fade-in">
+    <div className="quiz-card fade-in" key={currentIdx}>
       <div className="quiz-progress">
         <div className="progress-bar-bg">
           <div 
@@ -160,31 +153,29 @@ export const ReflectiveQuiz: React.FC<ReflectiveQuizProps> = ({ onComplete, onRe
             style={{ width: `${progressPercent}%` }}
           ></div>
         </div>
-        <span>{currentIdx + 1} z {QUESTIONS.length}</span>
+        <span>{currentIdx + 1} {t('quiz.uiOf')} {QUESTIONS.length}</span>
       </div>
 
       <h3 className="quiz-question">{currentQuestion.text}</h3>
-
       <div className="quiz-options">
         {currentQuestion.options.map((opt, i) => (
           <button
             key={i}
             className={`option-btn ${selectedScore === opt.score ? 'selected' : ''}`}
-            onClick={() => handleSelect(opt.score)}
+            onClick={() => setSelectedScore(opt.score)}
           >
             {opt.text}
           </button>
         ))}
       </div>
-
       <div style={{ marginTop: '2.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-        <button
-          className="btn-primary"
-          onClick={handleNext}
+        <button 
+          className="btn-primary" 
+          onClick={handleNext} 
           disabled={selectedScore === null}
           style={{ opacity: selectedScore === null ? 0.5 : 1, cursor: selectedScore === null ? 'not-allowed' : 'pointer' }}
         >
-          {currentIdx === QUESTIONS.length - 1 ? "Zakończ refleksję" : "Następne pytanie"}
+          {currentIdx === QUESTIONS.length - 1 ? t('quiz.uiBtnFinish') : t('quiz.uiBtnNext')}
         </button>
       </div>
     </div>

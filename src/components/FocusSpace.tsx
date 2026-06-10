@@ -1,335 +1,234 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Volume2, Wind } from 'lucide-react';
+import { Volume2, Wind, Play, Pause } from 'lucide-react';
+import { useTranslation } from '../contexts/TranslationContext';
+import type { TranslationKey } from '../utils/translations';
 
-interface PodcastTrack {
-  id: number;
-  title: string;
-  author: string;
-  duration: number; // in seconds
-  description: string;
-}
-
-const TRACKS: PodcastTrack[] = [
-  {
-    id: 1,
-    title: "1. Cyfrowy wizerunek i awatar",
-    author: "Projekt semestralny",
-    duration: 342,
-    description: "Krótka refleksja o tym, dlaczego wkładamy tyle energii w kreowanie profili i jak nasz cyfrowy awatar staje się ważniejszy od codzienności."
-  },
-  {
-    id: 2,
-    title: "2. Pętla cyfrowego wypalenia",
-    author: "Projekt semestralny",
-    duration: 435,
-    description: "Przyjrzenie się idei Byung-Chul Hana o społeczeństwie zmęczenia: jak sami siebie eksploatujemy, wierząc, że jesteśmy wolni."
-  },
-  {
-    id: 3,
-    title: "3. Syzyf i nieskończony scroll",
-    author: "Projekt semestralny",
-    duration: 270,
-    description: "Porównanie mitu o Syzyfie do naszego codziennego, bezwiednego przewijania tablicy społecznościowych, które nigdy się nie kończy."
-  }
-];
+// Simple AudioContext synthesis for generative background sounds
+// We don't want external audio files for this pure experience
+let audioCtx: AudioContext | null = null;
+let activeOscillators: OscillatorNode[] = [];
+let activeGains: GainNode[] = [];
 
 export const FocusSpace: React.FC = () => {
+  const { t } = useTranslation();
+  
   // --- Breathing States ---
-  const [breatheState, setBreatheState] = useState<'Wdech' | 'Wstrzymaj' | 'Wydech'>('Wdech');
+  const [breatheState, setBreatheState] = useState<'Inhale' | 'Hold' | 'Exhale'>('Inhale');
   const [breatheSeconds, setBreatheSeconds] = useState(4);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       setBreatheSeconds((prev) => {
         if (prev <= 1) {
           // Change state
           setBreatheState((curr) => {
-            if (curr === 'Wdech') return 'Wstrzymaj';
-            if (curr === 'Wstrzymaj') return 'Wydech';
-            return 'Wdech';
+            if (curr === 'Inhale') return 'Hold';
+            if (curr === 'Hold') return 'Exhale';
+            return 'Inhale';
           });
           return 4; // Reset to 4 seconds
         }
         return prev - 1;
       });
     }, 1000);
-
-    return () => clearInterval(interval);
+    return () => clearInterval(timer);
   }, []);
 
-  // --- Web Audio Synthesizer States ---
-  const [activeSynth, setActiveSynth] = useState<'none' | 'drone' | 'wind'>('none');
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  
-  // Drone Synth Nodes
-  const droneOsc1Ref = useRef<OscillatorNode | null>(null);
-  const droneOsc2Ref = useRef<OscillatorNode | null>(null);
-  const droneGainRef = useRef<GainNode | null>(null);
-  const droneModRef = useRef<OscillatorNode | null>(null);
+  // Map state to translated breathing text
+  const getBreatheStateText = (state: 'Inhale' | 'Hold' | 'Exhale') => {
+    if (state === 'Inhale') return t('focus.bInhale');
+    if (state === 'Hold') return t('focus.bHold');
+    if (state === 'Exhale') return t('focus.bExhale');
+    return state;
+  };
 
-  // Wind/Waves Synth Nodes
-  const windSourceRef = useRef<AudioBufferSourceNode | null>(null);
-  const windGainRef = useRef<GainNode | null>(null);
-  const windModRef = useRef<OscillatorNode | null>(null);
+  // --- Audio Synthesis ---
+  const [activeSynth, setActiveSynth] = useState<'none' | 'drone' | 'wind'>('none');
+  const [isPlayingPodcast, setIsPlayingPodcast] = useState(false);
+  const [podcastTime, setPodcastTime] = useState(0);
+  const podcastIntervalRef = useRef<number | null>(null);
 
   const initAudioContext = () => {
-    if (!audioCtxRef.current) {
-      const AudioContextClass = window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-      audioCtxRef.current = new AudioContextClass();
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
     }
-    if (audioCtxRef.current.state === 'suspended') {
-      audioCtxRef.current.resume();
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
     }
   };
 
   const stopAllSynths = () => {
-    // Stop drone
-    if (droneOsc1Ref.current) {
-      try {
-        droneOsc1Ref.current.stop();
-      } catch {
-        // Ignored: oscillator not started or stopped already
-      }
-    }
-    if (droneOsc2Ref.current) {
-      try {
-        droneOsc2Ref.current.stop();
-      } catch {
-        // Ignored
-      }
-    }
-    if (droneModRef.current) {
-      try {
-        droneModRef.current.stop();
-      } catch {
-        // Ignored
-      }
-    }
-    
-    // Stop wind
-    if (windSourceRef.current) {
-      try {
-        windSourceRef.current.stop();
-      } catch {
-        // Ignored
-      }
-    }
-    if (windModRef.current) {
-      try {
-        windModRef.current.stop();
-      } catch {
-        // Ignored
-      }
-    }
-
-    droneOsc1Ref.current = null;
-    droneOsc2Ref.current = null;
-    droneModRef.current = null;
-    windSourceRef.current = null;
-    windModRef.current = null;
-    
+    activeOscillators.forEach(osc => {
+      try { osc.stop(); } catch (e) { /* ignore */ }
+    });
+    activeGains.forEach(gain => {
+      gain.gain.setTargetAtTime(0, audioCtx?.currentTime || 0, 0.5);
+    });
+    activeOscillators = [];
+    activeGains = [];
     setActiveSynth('none');
   };
 
   const startDrone = () => {
-    stopAllSynths();
     initAudioContext();
-    const ctx = audioCtxRef.current!;
+    stopAllSynths();
+    if (!audioCtx) return;
 
-    // Create Oscillators for deep drone
-    const osc1 = ctx.createOscillator();
-    const osc2 = ctx.createOscillator();
-    const gainNode = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
-
-    osc1.type = 'sine';
-    osc1.frequency.setValueAtTime(73.42, ctx.currentTime); // D2 note
+    const frequencies = [110, 110.5, 165, 220]; // Deep, slightly beating frequencies (A2)
+    frequencies.forEach(freq => {
+      const osc = audioCtx!.createOscillator();
+      const gain = audioCtx!.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      
+      gain.gain.value = 0;
+      gain.gain.setTargetAtTime(0.05, audioCtx!.currentTime, 2); // Fade in
+      
+      osc.connect(gain);
+      gain.connect(audioCtx!.destination);
+      
+      osc.start();
+      activeOscillators.push(osc);
+      activeGains.push(gain);
+    });
     
-    osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(110.00, ctx.currentTime); // A2 note (fifth)
-
-    // Amplitude modulator (LFO) for breathing effect
-    const mod = ctx.createOscillator();
-    const modGain = ctx.createGain();
-    mod.type = 'sine';
-    mod.frequency.setValueAtTime(0.08, ctx.currentTime); // 12-second cycle
-    modGain.gain.setValueAtTime(0.04, ctx.currentTime); // mod range
-
-    gainNode.gain.setValueAtTime(0.08, ctx.currentTime); // base gain
-
-    mod.connect(modGain);
-    modGain.connect(gainNode.gain);
-
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(250, ctx.currentTime);
-
-    osc1.connect(filter);
-    osc2.connect(filter);
-    filter.connect(gainNode);
-    gainNode.connect(ctx.destination);
-
-    osc1.start();
-    osc2.start();
-    mod.start();
-
-    droneOsc1Ref.current = osc1;
-    droneOsc2Ref.current = osc2;
-    droneModRef.current = mod;
-    droneGainRef.current = gainNode;
     setActiveSynth('drone');
   };
 
   const startWind = () => {
-    stopAllSynths();
     initAudioContext();
-    const ctx = audioCtxRef.current!;
+    stopAllSynths();
+    if (!audioCtx) return;
 
-    // Generate White Noise Buffer
-    const bufferSize = ctx.sampleRate * 2;
-    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const output = noiseBuffer.getChannelData(0);
+    // White noise generator
+    const bufferSize = audioCtx.sampleRate * 2; 
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
-      output[i] = Math.random() * 2 - 1;
+      data[i] = Math.random() * 2 - 1;
     }
 
-    const noiseSource = ctx.createBufferSource();
-    noiseSource.buffer = noiseBuffer;
-    noiseSource.loop = true;
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
 
-    // Filter to sound like wind/waves
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.Q.setValueAtTime(1.8, ctx.currentTime);
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 400; // Muffled
 
-    // Modulate filter frequency for waving wind
-    const lfo = ctx.createOscillator();
-    const lfoGain = ctx.createGain();
+    const gain = audioCtx.createGain();
+    gain.gain.value = 0;
+    gain.gain.setTargetAtTime(0.1, audioCtx.currentTime, 2); // Fade in
+
+    // Modulate filter to sound like wind
+    const lfo = audioCtx.createOscillator();
     lfo.type = 'sine';
-    lfo.frequency.setValueAtTime(0.1, ctx.currentTime); // 10-second wave cycle
-    lfoGain.gain.setValueAtTime(280, ctx.currentTime);
-
+    lfo.frequency.value = 0.1; // Very slow sweep
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.value = 800; // Sweep range
+    
     lfo.connect(lfoGain);
     lfoGain.connect(filter.frequency);
-    filter.frequency.setValueAtTime(450, ctx.currentTime);
 
-    const gainNode = ctx.createGain();
-    gainNode.gain.setValueAtTime(0.035, ctx.currentTime); // keep it background
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
 
-    noiseSource.connect(filter);
-    filter.connect(gainNode);
-    gainNode.connect(ctx.destination);
-
-    noiseSource.start();
+    noise.start();
     lfo.start();
+    
+    // We hack the active arrays to keep track of these for stopping
+    activeOscillators.push(lfo as unknown as OscillatorNode);
+    activeGains.push(gain);
+    activeOscillators.push(noise as unknown as OscillatorNode); // Treat buffer source as osc for stop()
 
-    windSourceRef.current = noiseSource;
-    windModRef.current = lfo;
-    windGainRef.current = gainNode;
     setActiveSynth('wind');
   };
 
-  useEffect(() => {
-    return () => {
-      stopAllSynths();
-    };
-  }, []);
-
-  // --- Podcast Playback State ---
-  const [selectedTrackIdx, setSelectedTrackIdx] = useState(0);
-  const [isPlayingPodcast, setIsPlayingPodcast] = useState(false);
-  const [podcastElapsed, setPodcastElapsed] = useState(0);
+  // --- Fake Podcast Player ---
+  // A dynamic list using translations
+  const PODCASTS = [
+    {
+      id: 1,
+      titleKey: "focus.p1Title",
+      authorKey: "focus.p1Author",
+      duration: 185,
+      descriptionKey: "focus.p1Desc"
+    },
+    {
+      id: 2,
+      titleKey: "focus.p2Title",
+      authorKey: "focus.p2Author",
+      duration: 320,
+      descriptionKey: "focus.p2Desc"
+    },
+    {
+      id: 3,
+      titleKey: "focus.p3Title",
+      authorKey: "focus.p3Author",
+      duration: 270,
+      descriptionKey: "focus.p3Desc"
+    }
+  ];
   
-  // Melody oscillator when playing podcast (for sound feedback)
-  const podcastMelodyIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [activePodcastId, setActivePodcastId] = useState(1);
+  const activePodcast = PODCASTS.find(p => p.id === activePodcastId) || PODCASTS[0];
 
-  const currentTrack = TRACKS[selectedTrackIdx];
-
-  // Tick elapsed time when playing podcast
   useEffect(() => {
-    let timer: ReturnType<typeof setInterval>;
     if (isPlayingPodcast) {
-      timer = setInterval(() => {
-        setPodcastElapsed((prev) => {
-          if (prev >= currentTrack.duration) {
+      // Very gentle generative audio when podcast is "playing"
+      // Since we don't have actual voice files, we'll generate a soft thought-provoking melody
+      initAudioContext();
+      
+      const interval = window.setInterval(() => {
+        setPodcastTime(prev => {
+          if (prev >= activePodcast.duration) {
             setIsPlayingPodcast(false);
             return 0;
           }
           return prev + 1;
         });
-      }, 1000);
-    }
-    return () => {
-      if (timer) clearInterval(timer);
-    };
-  }, [isPlayingPodcast, currentTrack]);
 
-  // Handle ambient synth music when playing podcast (Brian Eno style micro-chords)
-  useEffect(() => {
-    if (isPlayingPodcast) {
-      initAudioContext();
-      
-      const playMelodyChord = () => {
-        if (!audioCtxRef.current) return;
-        const ctx = audioCtxRef.current;
-        if (ctx.state === 'suspended') return;
-
-        const baseNotes = [164.81, 220.00, 261.63, 329.63, 440.00]; // E3, A3, C4, E4, A4 pentatonic
-        const selectedNotes = [
-          baseNotes[Math.floor(Math.random() * baseNotes.length)],
-          baseNotes[Math.floor(Math.random() * baseNotes.length)]
-        ];
-
-        selectedNotes.forEach((freq, idx) => {
-          const osc = ctx.createOscillator();
-          const gainNode = ctx.createGain();
-          
+        // Random generative chime every ~4 seconds
+        if (audioCtx && Math.random() > 0.7) {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          const p = [220, 277.18, 329.63, 440]; // A major pentatonicish
+          osc.frequency.value = p[Math.floor(Math.random() * p.length)];
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.35);
           
-          gainNode.gain.setValueAtTime(0.0001, ctx.currentTime);
-          gainNode.gain.exponentialRampToValueAtTime(0.012, ctx.currentTime + 0.5 + idx * 0.35);
-          gainNode.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 4.5 + idx * 0.35);
+          gain.gain.value = 0;
+          gain.gain.setTargetAtTime(0.02, audioCtx.currentTime, 0.1);
+          gain.gain.setTargetAtTime(0, audioCtx.currentTime + 0.5, 1);
           
-          osc.connect(gainNode);
-          gainNode.connect(ctx.destination);
-          
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
           osc.start();
-          osc.stop(ctx.currentTime + 5.0);
-        });
-      };
-
-      // Play initially, then periodically
-      playMelodyChord();
-      podcastMelodyIntervalRef.current = setInterval(playMelodyChord, 6000);
+          osc.stop(audioCtx.currentTime + 3);
+        }
+      }, 1000);
+      podcastIntervalRef.current = interval;
     } else {
-      if (podcastMelodyIntervalRef.current) {
-        clearInterval(podcastMelodyIntervalRef.current);
-        podcastMelodyIntervalRef.current = null;
+      if (podcastIntervalRef.current) {
+        clearInterval(podcastIntervalRef.current);
       }
     }
-
+    
     return () => {
-      if (podcastMelodyIntervalRef.current) {
-        clearInterval(podcastMelodyIntervalRef.current);
-      }
+      if (podcastIntervalRef.current) clearInterval(podcastIntervalRef.current);
     };
-  }, [isPlayingPodcast]);
-
-  // Map state to breathing text
-  const getBreatheStateText = (state: 'Wdech' | 'Wstrzymaj' | 'Wydech') => {
-    return state;
-  };
-
-  const handleTrackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const idx = parseInt(e.target.value);
-    setSelectedTrackIdx(idx);
-    setPodcastElapsed(0);
-    setIsPlayingPodcast(false);
-  };
+  }, [isPlayingPodcast, activePodcast.duration]);
 
   const handlePodcastPlayPause = () => {
     initAudioContext();
     setIsPlayingPodcast(!isPlayingPodcast);
+  };
+
+  const handleTrackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setActivePodcastId(Number(e.target.value));
+    setPodcastTime(0);
+    setIsPlayingPodcast(false);
   };
 
   const formatTime = (secs: number) => {
@@ -338,21 +237,19 @@ export const FocusSpace: React.FC = () => {
     return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
-  const progressPercent = (podcastElapsed / currentTrack.duration) * 100;
-
   return (
     <div className="focus-space-container">
       {/* Box 1: Breathing Guide */}
       <div className="card focus-tool-card" style={{ flex: 1.2 }}>
-        <span className="lib-concept">Trening uważności</span>
-        <h3 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>Oddech uziemiający</h3>
+        <span className="lib-concept">{t('focus.uiMind')}</span>
+        <h3 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>{t('focus.uiGround')}</h3>
         <p style={{ fontSize: '0.95rem', marginBottom: '2rem' }}>
-          Pozwól odpocząć swoim oczom. Wdychaj i wydychaj powietrze w rytm rozszerzającego się okręgu, by wyciszyć gonitwę myśli.
+          {t('focus.uiEye')}
         </p>
 
         <div className="breathing-box">
           <div className="breathing-ring-outer">
-            <div className={`breathing-ring-inner ${breatheState === 'Wdech' ? 'inhale' : breatheState === 'Wstrzymaj' ? 'hold' : 'exhale'}`}>
+            <div className={`breathing-ring-inner ${breatheState.toLowerCase()}`}>
               <div className="breathing-text">
                 {getBreatheStateText(breatheState)}
                 <div style={{ fontSize: '0.85rem', fontWeight: 400, opacity: 0.8, marginTop: '2px' }}>
@@ -362,17 +259,17 @@ export const FocusSpace: React.FC = () => {
             </div>
           </div>
           <p className="breathing-instruction">
-            {breatheState === 'Wdech' && "Powoli napełniaj płuca powietrzem..."}
-            {breatheState === 'Wstrzymaj' && "Zaobserwuj przestrzeń ciszy i spokoju..."}
-            {breatheState === 'Wydech' && "Uwolnij się od wszelkich porównań..."}
+            {breatheState === 'Inhale' && t('focus.iInhale')}
+            {breatheState === 'Hold' && t('focus.iHold')}
+            {breatheState === 'Exhale' && t('focus.iExhale')}
           </p>
         </div>
       </div>
 
       {/* Box 2: Soundscapes & Podcasts */}
       <div className="card focus-tool-card audio-card">
-        <span className="lib-concept">Strefa dźwięku</span>
-        <h3 style={{ fontSize: '1.75rem', marginBottom: '1.5rem' }}>Pejzaże dźwiękowe</h3>
+        <span className="lib-concept">{t('focus.uiAudio')}</span>
+        <h3 style={{ fontSize: '1.75rem', marginBottom: '1.5rem' }}>{t('focus.uiSound')}</h3>
 
         {/* Ambient Synthesizers */}
         <div className="ambient-toggles">
@@ -380,15 +277,15 @@ export const FocusSpace: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <Volume2 size={18} style={{ color: 'var(--accent-sage)' }} />
               <div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 500 }}>Ziemski rezonans</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Głęboki, jednostajny szum ułatwiający uziemienie</div>
+                <div style={{ fontSize: '0.95rem', fontWeight: 500 }}>{t('focus.s1Title')}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{t('focus.s1Desc')}</div>
               </div>
             </div>
             <button 
               className={activeSynth === 'drone' ? 'playing' : ''}
               onClick={activeSynth === 'drone' ? stopAllSynths : startDrone}
             >
-              {activeSynth === 'drone' ? 'Odtwarzane' : 'Słuchaj'}
+              {activeSynth === 'drone' ? t('focus.uiPlaying') : t('focus.uiPlay')}
             </button>
           </div>
 
@@ -396,65 +293,74 @@ export const FocusSpace: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <Wind size={18} style={{ color: 'var(--accent-sage)' }} />
               <div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 500 }}>Szum wiatru i fal</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Łagodny, automatycznie generowany dźwięk wiatru i fal</div>
+                <div style={{ fontSize: '0.95rem', fontWeight: 500 }}>{t('focus.s2Title')}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{t('focus.s2Desc')}</div>
               </div>
             </div>
             <button 
               className={activeSynth === 'wind' ? 'playing' : ''}
               onClick={activeSynth === 'wind' ? stopAllSynths : startWind}
             >
-              {activeSynth === 'wind' ? 'Odtwarzane' : 'Słuchaj'}
+              {activeSynth === 'wind' ? t('focus.uiPlaying') : t('focus.uiPlay')}
             </button>
           </div>
         </div>
 
         {/* Podcast Player */}
         <div className="podcast-player">
-          <span className="lib-concept" style={{ fontSize: '0.7rem' }}>Rozmowy o cyfrowej refleksji</span>
+          <span className="lib-concept" style={{ fontSize: '0.7rem' }}>{t('focus.uiPodTag')}</span>
           
           <div style={{ marginTop: '0.75rem', marginBottom: '1rem' }}>
             <select 
-              className="track-select-dropdown" 
-              value={selectedTrackIdx} 
+              className="track-select-dropdown"
+              value={activePodcastId} 
               onChange={handleTrackChange}
             >
-              {TRACKS.map((t, idx) => (
-                <option key={t.id} value={idx}>{t.title}</option>
+              {PODCASTS.map(p => (
+                <option key={p.id} value={p.id}>{t(p.titleKey as TranslationKey)}</option>
               ))}
             </select>
           </div>
 
-          <div className="podcast-track-info">
-            <div className="podcast-title">{currentTrack.title}</div>
-            <div className="podcast-author">{currentTrack.author}</div>
-            <p style={{ fontSize: '0.85rem', margin: '0.5rem 0 0 0', lineHeight: 1.4 }}>
-              {currentTrack.description}
-            </p>
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', minHeight: '40px' }}>
+            {t(activePodcast.descriptionKey as TranslationKey)}
           </div>
 
-          <div className="podcast-controls">
-            <button className="play-pause-btn" onClick={handlePodcastPlayPause}>
-              {isPlayingPodcast ? <Pause size={20} fill="white" /> : <Play size={20} fill="white" style={{ marginLeft: '2px' }} />}
+          {/* <div className='podcast-controls' style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}> */}
+          <div className='podcast-controls'>
+            <button 
+              className="play-pause-btn" 
+              onClick={handlePodcastPlayPause}
+              aria-label={isPlayingPodcast ? "Pause" : "Play"}
+            >
+              {isPlayingPodcast ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" style={{ marginLeft: '4px' }} />}
             </button>
-
-            <div className="track-selector">
+            <div className='track-selector'>
               <div className="progress-slider-container">
-                <span>{formatTime(podcastElapsed)}</span>
-                <div className="progress-slider" onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const pct = (e.clientX - rect.left) / rect.width;
-                  setPodcastElapsed(Math.floor(pct * currentTrack.duration));
-                }}>
-                  <div className="progress-slider-fill" style={{ width: `${progressPercent}%` }}></div>
+                <span>{formatTime(podcastTime)}</span>
+                <div 
+                  className="progress-slider" 
+                  onClick={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const pct = (e.clientX - rect.left) / rect.width;
+                    setPodcastTime(Math.floor(pct * activePodcast.duration));
+                  }}
+                >
+                  <div 
+                    className="progress-slider-fill" 
+                    style={{ 
+                      width: `${(podcastTime / activePodcast.duration) * 100}%`,
+                      backgroundColor: 'var(--text-primary)'
+                    }}
+                  ></div>
                 </div>
-                <span>{formatTime(currentTrack.duration)}</span>
+                <span>{formatTime(activePodcast.duration)}</span>
               </div>
             </div>
           </div>
           {isPlayingPodcast && (
             <div style={{ fontSize: '0.75rem', color: 'var(--accent-clay)', fontStyle: 'italic', textAlign: 'center', marginTop: '0.5rem' }} className="fade-in">
-              🔊 Generowanie łagodnych, losowych melodii w tle...
+              {t('focus.uiGen')}
             </div>
           )}
         </div>
